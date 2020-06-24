@@ -7,7 +7,7 @@ namespace Middleware
     public interface IRestAPI
     {
         [OperationContract]
-        [WebInvoke]
-        void MServiceRest(string message);
+        [WebInvoke(RequestFormat = WebMessageFormat.Json, Method = "POST")]
+        void MServiceRest(Message message);
     }
 }

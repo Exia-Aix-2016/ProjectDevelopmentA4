@@ -1,4 +1,6 @@
-﻿using System;
+﻿
+using Newtonsoft.Json;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +13,7 @@ namespace Middleware
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession)]
     public class Endpoint : IEndpoint, IRestAPI
     {
-        private static ConcurrentDictionary<string, IEndpointCallback> clients = new ConcurrentDictionary<string, IEndpointCallback>();
+        private static readonly ConcurrentDictionary<string, IEndpointCallback> clients = new ConcurrentDictionary<string, IEndpointCallback>();
         private IEndpointCallback callback = null;
 
         public Endpoint()
@@ -19,33 +21,50 @@ namespace Middleware
             try
             {
                 callback = OperationContext.Current.GetCallbackChannel<IEndpointCallback>();
+            }
+            catch { }//When MServiceRest call.
 
-                
-            }
-            catch (Exception err){
-            }
         }
 
         public void MService(Message message)
         {
+            if (callback != null && message.TokenUser != string.Empty)
+                clients.AddOrUpdate(message.TokenUser, callback, (k, v) => callback);
 
-            if(callback != null && message.TokenUser != string.Empty)
-                clients.AddOrUpdate(message.TokenUser, callback, (k,v) => callback);
-
-
-            if(message.TokenUser != string.Empty && clients.ContainsKey(message.TokenUser))
+            if (message.TokenUser == null)
             {
-                Console.WriteLine(message.TokenUser);
-                clients[message.TokenUser].MServiceCallback(message);
-            }    
+                   //TODO LOGIN
+            }
+            else
+            {
+                //TODO IS AUTH 
+                switch (message.OperationName)
+                {
+                    case "DECRYPT":
+                        break;
+                    case "SOLUTION":
+                        if (clients.ContainsKey(message.TokenUser))
+                        {
+                            Console.WriteLine(message.TokenUser);
+                            clients[message.TokenUser].MServiceCallback(message);
+                        }
+                        else
+                        {
+                            throw new ClientDisconnectedException();
+                        }
+                        break;
+                    default:
+                        throw new InvalidOperationException("The message operation is invalid");
+                }
+            }
         }
 
-        public void MServiceRest(string message)
+        public void MServiceRest(Message message)
         {
-            MService(new Message { TokenUser = "TesT", OperationName = message });
-
-             Console.WriteLine(message);
+            if(message != null)
+            {
+                MService(message);
+            }
         }
-        //private IEndpointCallback callback { get => OperationContext.Current.GetCallbackChannel<IEndpointCallback>(); }
     }
 }
