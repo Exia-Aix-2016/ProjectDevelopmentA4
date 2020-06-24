@@ -23,7 +23,6 @@ namespace Middleware
                 
             }
             catch (Exception err){
-                Console.WriteLine(err.ToString());
             }
         }
 
@@ -36,13 +35,16 @@ namespace Middleware
 
             if(message.TokenUser != string.Empty)
             {
+                Console.WriteLine(message.TokenUser);
                 clients[message.TokenUser].MServiceCallback(message);
             }    
         }
 
-        public void MServiceRest(string message)
+        public string MServiceRest(string message)
         {
             MService(new Message { TokenUser = "TesT", OperationName = message });
+
+            return "you said :" + message;
         }
         //private IEndpointCallback callback { get => OperationContext.Current.GetCallbackChannel<IEndpointCallback>(); }
     }

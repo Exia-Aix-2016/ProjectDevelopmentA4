@@ -30,7 +30,8 @@ namespace Client
             instanceContext = new InstanceContext(new ClientCallbackHandler());
             endpointClient = new EndpointClient(instanceContext);
 
-            endpointClient.MServiceAsync(new Message { TokenUser = "TesT",  OperationName = "BITE!!!!!!!!!!!!!!!!!!!!" });
+            //Example...
+            endpointClient.MServiceAsync(new Message { TokenUser = "TesT",  OperationName = "Decrypt" });
         }
 
         public void Notify(Message message)
