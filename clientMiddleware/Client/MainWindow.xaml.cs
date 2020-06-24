@@ -19,10 +19,6 @@ namespace Client
             ClientCallbackHandler.Update += Notify;
             instanceContext = new InstanceContext(new ClientCallbackHandler());
             endpointClient = new EndpointClient(instanceContext);
-
-
-
-            
         }
 
         public void Notify(Message message)
