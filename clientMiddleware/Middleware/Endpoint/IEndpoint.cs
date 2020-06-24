@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -7,11 +8,10 @@ using System.Threading.Tasks;
 
 namespace Middleware
 {
-    public interface IEndpointCallback
+    [ServiceContract(SessionMode = SessionMode.Required, CallbackContract = typeof(IEndpointCallback))]
+    public interface IEndpoint
     {
         [OperationContract(IsOneWay = true)]
-        void MServiceCallback(Message message);
-        
-
+        void MService(Message message);
     }
 }

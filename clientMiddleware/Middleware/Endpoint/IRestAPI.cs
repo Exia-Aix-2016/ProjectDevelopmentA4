@@ -1,4 +1,5 @@
-﻿using System.ServiceModel;
+﻿using Models;
+using System.ServiceModel;
 using System.ServiceModel.Web;
 
 namespace Middleware

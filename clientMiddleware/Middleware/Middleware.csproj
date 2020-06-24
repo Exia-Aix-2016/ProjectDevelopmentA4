@@ -62,15 +62,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientDisconnectedException.cs" />
+    <Compile Include="Models\Exceptions\ClientDisconnectedException.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="dataInitialize.cs" />
     <Compile Include="userContext.cs" />
-    <Compile Include="Endpoint.cs" />
-    <Compile Include="IEndpoint.cs" />
-    <Compile Include="IEndpointCallback.cs" />
-    <Compile Include="IRestAPI.cs" />
-    <Compile Include="Models\Message.cs" />
+    <Compile Include="Endpoint\Endpoint.cs" />
+    <Compile Include="Endpoint\IEndpoint.cs" />
+    <Compile Include="Endpoint\IEndpointCallback.cs" />
+    <Compile Include="Endpoint\IRestAPI.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="User.cs" />

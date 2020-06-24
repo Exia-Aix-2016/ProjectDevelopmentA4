@@ -1,4 +1,5 @@
 ﻿
+using Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
@@ -63,7 +64,10 @@ namespace Middleware
         {
             if(message != null)
             {
-                MService(message);
+  
+                KeyValuePair<string, string> obj = (KeyValuePair<string, string>)message.Data[0];
+                Console.WriteLine(obj.Value);
+               // MService(message);
             }
         }
     }
