@@ -64,10 +64,7 @@ namespace Middleware
         {
             if(message != null)
             {
-  
-                KeyValuePair<string, string> obj = (KeyValuePair<string, string>)message.Data[0];
-                Console.WriteLine(obj.Value);
-               // MService(message);
+               MService(message);
             }
         }
     }
