@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Middleware;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -18,11 +20,24 @@ namespace Client
     /// <summary>
     /// Logique d'interaction pour MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IComm
     {
+        private InstanceContext instanceContext;
+        private EndpointClient endpointClient;
         public MainWindow()
         {
             InitializeComponent();
+
+            instanceContext = new InstanceContext(new ClientCallbackHandler(this));
+            endpointClient = new EndpointClient(instanceContext);
+
+            
+        }
+
+        public void notify(Message message)
+        {
+            Console.WriteLine(message.OperationName);
         }
     }
+
 }

@@ -7,12 +7,16 @@ using System.Threading.Tasks;
 
 namespace Client
 {
-    class ClientCallbackHandler : IEndpointCallback
+    public class ClientCallbackHandler : IEndpointCallback
     {
+        private IComm controller;
+        public ClientCallbackHandler(IComm controller)
+        {
+            this.controller = controller;
+        }
         public void MServiceCallback(Message message)
         {
-            //TODO : Notify Controller !
-            Console.WriteLine(message.OperationName);
+            controller.notify(message);
         }
     }
 }
