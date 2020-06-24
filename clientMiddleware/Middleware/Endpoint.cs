@@ -28,7 +28,7 @@ namespace Middleware
 
         public void MService(Message message)
         {
-            if (callback != null && message.TokenUser != string.Empty)
+            if (callback != null && message.TokenUser != null && message.TokenUser != string.Empty)
                 clients.AddOrUpdate(message.TokenUser, callback, (k, v) => callback);
 
             if (message.TokenUser == null)
