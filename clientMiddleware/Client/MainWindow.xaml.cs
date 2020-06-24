@@ -19,6 +19,8 @@ namespace Client
             ClientCallbackHandler.Update += Notify;
             instanceContext = new InstanceContext(new ClientCallbackHandler());
             endpointClient = new EndpointClient(instanceContext);
+
+            endpointClient.MServiceAsync(new Message { TokenUser = "TesT",  OperationName = "BITE!!!!!!!!!!!!!!!!!!!!" });
         }
 
         public void Notify(Message message)

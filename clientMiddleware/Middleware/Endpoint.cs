@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -7,13 +8,42 @@ using System.Threading.Tasks;
 
 namespace Middleware
 {
-    public class Endpoint : IEndpoint
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession)]
+    public class Endpoint : IEndpoint, IRestAPI
     {
-        public void MService(Message message)
+        private static ConcurrentDictionary<string, IEndpointCallback> clients = new ConcurrentDictionary<string, IEndpointCallback>();
+        private IEndpointCallback callback = null;
+
+        public Endpoint()
         {
-            callback.MServiceCallback(message);
+            try
+            {
+                callback = OperationContext.Current.GetCallbackChannel<IEndpointCallback>();
+
+                
+            }
+            catch (Exception err){
+                Console.WriteLine(err.ToString());
+            }
         }
 
-        private IEndpointCallback callback { get => OperationContext.Current.GetCallbackChannel<IEndpointCallback>(); }
+        public void MService(Message message)
+        {
+
+            if(callback != null && message.TokenUser != string.Empty)
+                clients.AddOrUpdate(message.TokenUser, callback, (k,v) => callback);
+
+
+            if(message.TokenUser != string.Empty)
+            {
+                clients[message.TokenUser].MServiceCallback(message);
+            }    
+        }
+
+        public void MServiceRest(string message)
+        {
+            MService(new Message { TokenUser = "TesT", OperationName = message });
+        }
+        //private IEndpointCallback callback { get => OperationContext.Current.GetCallbackChannel<IEndpointCallback>(); }
     }
 }

@@ -38,6 +38,15 @@ namespace Middleware
             serviceHost.AddServiceEndpoint(ServiceMetadataBehavior.MexContractName, MetadataExchangeBindings.CreateMexHttpBinding(), wsdlUri);
 
 
+
+            //PART REST API
+            Uri restApi = new Uri(@"http://0.0.0.0:8080/api");
+            var endpoint = serviceHost.AddServiceEndpoint(typeof(IRestAPI), new WebHttpBinding(), restApi);
+            endpoint.EndpointBehaviors.Add(new WebHttpBehavior());
+
+
+            
+
             Console.WriteLine("Middleware is starting...");
             serviceHost.Open();
 
