@@ -32,6 +32,8 @@ namespace Middleware
             //PART TO ABLE TO GET THE WSDL
             Uri wsdlUri = new Uri(@"http://0.0.0.0:8080/mex");
             var meta = new ServiceMetadataBehavior();
+            meta.HttpGetEnabled = true;
+            meta.HttpGetUrl = wsdlUri;
             serviceHost.Description.Behaviors.Add(meta);
             serviceHost.AddServiceEndpoint(ServiceMetadataBehavior.MexContractName, MetadataExchangeBindings.CreateMexHttpBinding(), wsdlUri);
 
