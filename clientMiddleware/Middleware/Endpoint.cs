@@ -33,18 +33,18 @@ namespace Middleware
                 clients.AddOrUpdate(message.TokenUser, callback, (k,v) => callback);
 
 
-            if(message.TokenUser != string.Empty)
+            if(message.TokenUser != string.Empty && clients.ContainsKey(message.TokenUser))
             {
                 Console.WriteLine(message.TokenUser);
                 clients[message.TokenUser].MServiceCallback(message);
             }    
         }
 
-        public string MServiceRest(string message)
+        public void MServiceRest(string message)
         {
             MService(new Message { TokenUser = "TesT", OperationName = message });
 
-            return "you said :" + message;
+             Console.WriteLine(message);
         }
         //private IEndpointCallback callback { get => OperationContext.Current.GetCallbackChannel<IEndpointCallback>(); }
     }

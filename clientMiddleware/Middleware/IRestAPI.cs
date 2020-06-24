@@ -8,6 +8,6 @@ namespace Middleware
     {
         [OperationContract]
         [WebInvoke]
-        string MServiceRest(string message);
+        void MServiceRest(string message);
     }
 }
