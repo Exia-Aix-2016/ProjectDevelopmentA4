@@ -1,26 +1,14 @@
-﻿using Middleware;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using Middleware;
 using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Client
 {
     /// <summary>
     /// Logique d'interaction pour MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, IComm
+    public partial class MainWindow : Window
     {
         private InstanceContext instanceContext;
         private EndpointClient endpointClient;
@@ -28,13 +16,16 @@ namespace Client
         {
             InitializeComponent();
 
-            instanceContext = new InstanceContext(new ClientCallbackHandler(this));
+            ClientCallbackHandler.Update += Notify;
+            instanceContext = new InstanceContext(new ClientCallbackHandler());
             endpointClient = new EndpointClient(instanceContext);
+
+
 
             
         }
 
-        public void notify(Message message)
+        public void Notify(Message message)
         {
             Console.WriteLine(message.OperationName);
         }

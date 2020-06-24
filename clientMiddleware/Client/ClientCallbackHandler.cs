@@ -9,14 +9,17 @@ namespace Client
 {
     public class ClientCallbackHandler : IEndpointCallback
     {
-        private IComm controller;
-        public ClientCallbackHandler(IComm controller)
+        //Event to Update Controller
+        public delegate void NotifCtrl(Message message);
+        public static event NotifCtrl Update;
+    
+        public ClientCallbackHandler()
         {
-            this.controller = controller;
+
         }
         public void MServiceCallback(Message message)
         {
-            controller.notify(message);
+            Update?.Invoke(message);
         }
     }
 }
