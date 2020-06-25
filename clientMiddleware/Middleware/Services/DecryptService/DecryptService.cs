@@ -74,7 +74,7 @@ namespace Middleware.Services
                     }
                 }
 
-                Thread.Sleep(10);//To not overload the thread.
+                Thread.Sleep(10);//To not overload the CPU.
             }
                
             Console.WriteLine("DecryptService Thread : " + Thread.CurrentThread.ManagedThreadId + " stopped");

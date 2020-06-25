@@ -18,8 +18,8 @@ namespace Middleware
         {
             Console.WriteLine("Middleware configuration...");
 
-            AuthService test = new AuthService();
-
+            /*AuthService test = new AuthService();
+          
             string token = test.UserLogin("quentin@viacesi.fr", "root");
 
             bool validated = test.IsValidToken(token);
@@ -30,7 +30,8 @@ namespace Middleware
             else
             {
                 Console.WriteLine("Noooon");
-            }
+            }*/
+
 
             //INITIATIZATION OF NetTcpBinding
 
