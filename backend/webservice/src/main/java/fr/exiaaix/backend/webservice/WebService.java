@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.exiaaix.backend.webservice;
 import javax.annotation.Resource;
 import javax.inject.Inject;
@@ -35,14 +30,10 @@ public class WebService {
         
         //start check db
         
-        TextMessage textMessage = context.createTextMessage("tralala");
+        TextMessage textMessage = context.createTextMessage(cipherParam.getPlanText());
         context.createProducer().send(messagingQueue, textMessage);
-        JMSConsumer consumer = context.createConsumer(messagingQueue);
         
-        String mesageBody = consumer.receive().getBody(String.class);
-        
-        
-        return Response.status(Response.Status.OK).entity("messageContain " + mesageBody).type(MediaType.TEXT_PLAIN).build(); 
+        return Response.status(Response.Status.OK).entity(cipherParam.getPlanText()).type(MediaType.TEXT_PLAIN).build(); 
     }
 
     
