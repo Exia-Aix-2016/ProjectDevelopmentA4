@@ -1,4 +1,5 @@
-﻿using Models;
+﻿using Middleware.Models;
+using Models;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 

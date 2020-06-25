@@ -16,6 +16,7 @@ using Models;
 using Middleware.Services;
 using System.ServiceModel;
 using Middleware.Services.AuthService;
+using Middleware.Models;
 
 namespace Middleware
 {

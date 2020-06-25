@@ -7,13 +7,11 @@ using System.Threading.Tasks;
 
 namespace Models
 {
-    [DataContract]
     public class Credential
     {
-        [DataMember(Name = "Username", EmitDefaultValue = false)]
+
         public string Username { get; set; }
 
-        [DataMember(Name = "Password", EmitDefaultValue = false)]
         public string Password { get; set; }
 
     }

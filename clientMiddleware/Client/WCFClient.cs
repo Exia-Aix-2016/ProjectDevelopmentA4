@@ -8,15 +8,14 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Middleware
+namespace Middleware.Models
 {
     using System.Runtime.Serialization;
     
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Message", Namespace="http://schemas.datacontract.org/2004/07/Middleware")]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(object[]))]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Message", Namespace="http://schemas.datacontract.org/2004/07/Middleware.Models")]
     public partial class Message : object, System.Runtime.Serialization.IExtensibleDataObject
     {
         
@@ -24,7 +23,7 @@ namespace Middleware
         
         private string AppVersionField;
         
-        private object[] DataField;
+        private object DataField;
         
         private string InfoField;
         
@@ -50,7 +49,7 @@ namespace Middleware
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
         public string AppVersion
         {
             get
@@ -63,8 +62,8 @@ namespace Middleware
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public object[] Data
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+        public object Data
         {
             get
             {
@@ -76,7 +75,7 @@ namespace Middleware
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
         public string Info
         {
             get
@@ -89,7 +88,7 @@ namespace Middleware
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
         public string OperationName
         {
             get
@@ -102,7 +101,7 @@ namespace Middleware
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
         public string OperationVersion
         {
             get
@@ -115,7 +114,7 @@ namespace Middleware
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
         public bool StatusOp
         {
             get
@@ -128,7 +127,7 @@ namespace Middleware
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
         public string TokenApp
         {
             get
@@ -141,7 +140,7 @@ namespace Middleware
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
         public string TokenUser
         {
             get
@@ -163,10 +162,10 @@ public interface IEndpoint
 {
     
     [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IEndpoint/MService")]
-    void MService(Middleware.Message message);
+    void MService(Middleware.Models.Message message);
     
     [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IEndpoint/MService")]
-    System.Threading.Tasks.Task MServiceAsync(Middleware.Message message);
+    System.Threading.Tasks.Task MServiceAsync(Middleware.Models.Message message);
 }
 
 [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -174,7 +173,7 @@ public interface IEndpointCallback
 {
     
     [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IEndpoint/MServiceCallback")]
-    void MServiceCallback(Middleware.Message message);
+    void MServiceCallback(Middleware.Models.Message message);
 }
 
 [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -212,13 +211,70 @@ public partial class EndpointClient : System.ServiceModel.DuplexClientBase<IEndp
     {
     }
     
-    public void MService(Middleware.Message message)
+    public void MService(Middleware.Models.Message message)
     {
         base.Channel.MService(message);
     }
     
-    public System.Threading.Tasks.Task MServiceAsync(Middleware.Message message)
+    public System.Threading.Tasks.Task MServiceAsync(Middleware.Models.Message message)
     {
         return base.Channel.MServiceAsync(message);
+    }
+}
+
+[System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+[System.ServiceModel.ServiceContractAttribute(ConfigurationName="IRestAPI")]
+public interface IRestAPI
+{
+    
+    [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRestAPI/MServiceRest", ReplyAction="http://tempuri.org/IRestAPI/MServiceRestResponse")]
+    void MServiceRest(Middleware.Models.Message message);
+    
+    [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRestAPI/MServiceRest", ReplyAction="http://tempuri.org/IRestAPI/MServiceRestResponse")]
+    System.Threading.Tasks.Task MServiceRestAsync(Middleware.Models.Message message);
+}
+
+[System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+public interface IRestAPIChannel : IRestAPI, System.ServiceModel.IClientChannel
+{
+}
+
+[System.Diagnostics.DebuggerStepThroughAttribute()]
+[System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+public partial class RestAPIClient : System.ServiceModel.ClientBase<IRestAPI>, IRestAPI
+{
+    
+    public RestAPIClient()
+    {
+    }
+    
+    public RestAPIClient(string endpointConfigurationName) : 
+            base(endpointConfigurationName)
+    {
+    }
+    
+    public RestAPIClient(string endpointConfigurationName, string remoteAddress) : 
+            base(endpointConfigurationName, remoteAddress)
+    {
+    }
+    
+    public RestAPIClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
+            base(endpointConfigurationName, remoteAddress)
+    {
+    }
+    
+    public RestAPIClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+            base(binding, remoteAddress)
+    {
+    }
+    
+    public void MServiceRest(Middleware.Models.Message message)
+    {
+        base.Channel.MServiceRest(message);
+    }
+    
+    public System.Threading.Tasks.Task MServiceRestAsync(Middleware.Models.Message message)
+    {
+        return base.Channel.MServiceRestAsync(message);
     }
 }

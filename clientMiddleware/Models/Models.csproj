@@ -45,7 +45,6 @@
     <Compile Include="Credential.cs" />
     <Compile Include="DecryptMsg.cs" />
     <Compile Include="LoginResult.cs" />
-    <Compile Include="Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

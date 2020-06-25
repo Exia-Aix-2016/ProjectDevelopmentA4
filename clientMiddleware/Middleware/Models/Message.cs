@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Models
+namespace Middleware.Models
 {
     [DataContract]
     public class Message

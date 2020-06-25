@@ -1,4 +1,6 @@
-﻿using Middleware;
+﻿
+
+using Middleware.Models;
 
 namespace Client
 {

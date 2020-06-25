@@ -1,15 +1,11 @@
 ﻿
+using Middleware.Models;
 using Middleware.Services;
 using Middleware.Services.AuthService;
 using Models;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Middleware
 {
@@ -37,14 +33,14 @@ namespace Middleware
             if (callback != null && message.TokenUser != null && message.TokenUser != string.Empty)
                 clients.AddOrUpdate(message.TokenUser, callback, (k, v) => callback);
 
-            if (message.TokenUser == null)
+            if (message.TokenUser == null && message.OperationName == "AUTHENTIFICATION")
             {
                 Message returnMessage = authService.ServiceAction(message);
 
                 callback.MServiceCallback(message);
 
             }
-            else
+            else if(message.TokenUser != null)
             {
                 // TODO IS AUTH 
 
