@@ -5,27 +5,31 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
-
+using System.Runtime.InteropServices;
 
 namespace Middleware
 {
     class AuthService
     {
         
-        public userLogin()
+        public void userLogin(string login, string pass)
         {
             //Comment récupérer Login/Password et la connexion a la bdd
-            
-            string commandString = "SELECT login FROM users WHERE login = @login";
+
+            userContext user = new userContext();
+
+            user.Users.Find();
+
+            string commandLoginString = "SELECT login FROM users WHERE login = @login";
             SqlParameter paramLogin = new SqlParameter("@login", SqlDbType.Text);
             paramLogin.Value = login;
 
-            Object oUser = AuthService.QueryUser();
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                using (SqlCommand cmd = new SqlCommand(commandString, conn))
+                using (SqlCommand cmd = new SqlCommand(commandLoginString, connection))
                 {
-                    connection.CommandType = CommandType.Text;
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Parameters.Add(paramLogin);
 
                     connection.Open();
                     SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
@@ -36,18 +40,19 @@ namespace Middleware
 
 
             // Check si le mot de passe correspond
-            string commandString = "SELECT login FROM users WHERE login = @login AND pass = @pass";
-            SqlParameter paramLogin = new SqlParameter("@login", SqlDbType.Text);
+            string commandPassString = "SELECT login FROM users WHERE login = @login AND pass = @pass";
+            SqlParameter paramLogin2 = new SqlParameter("@login", SqlDbType.Text);
             SqlParameter paramPass = new SqlParameter("@pass", SqlDbType.Text);
-            paramLogin.Value = login;
+            paramLogin2.Value = login;
             paramPass.Value = pass;
 
-            Object oUser = AuthService.QueryUser();
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                using (SqlCommand cmd = new SqlCommand(commandString, conn))
+                using (SqlCommand cmd = new SqlCommand(commandPassString, connection))
                 {
-                    connection.CommandType = CommandType.Text;
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Parameters.Add(paramLogin2);
+                    cmd.Parameters.Add(paramPass);
 
                     connection.Open();
                     SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
