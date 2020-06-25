@@ -69,7 +69,7 @@
     <Compile Include="Models\Exceptions\ClientDisconnectedException.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="dataInitialize.cs" />
-    <Compile Include="Services\AuthService\IAuthService.cs" />
+    <Compile Include="Services\AuthService\IToken.cs" />
     <Compile Include="Services\DecryptService\DecryptService.cs" />
     <Compile Include="Services\DecryptService\IDecryptService.cs" />
     <Compile Include="Services\IService.cs" />

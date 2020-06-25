@@ -22,17 +22,7 @@ namespace Middleware
 
 
 
-            /*string token = test.UserLogin("quentin@viacesi.fr", "root");
-
-            bool validated = test.IsValidToken(token);
-            if (validated)
-            {
-                Console.WriteLine("voui");
-            }
-            else
-            {
-                Console.WriteLine("Noooon");
-            }*/
+            
 
             //INITIATIZATION OF NetTcpBinding
 

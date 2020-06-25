@@ -1,5 +1,6 @@
 ﻿
 using Middleware.Services;
+using Middleware.Services.AuthService;
 using Models;
 using Newtonsoft.Json;
 using System;
@@ -19,7 +20,7 @@ namespace Middleware
         private IEndpointCallback callback = null;
 
         public static readonly IService decryptService = new DecryptService();
-        public static readonly IAuthService authService = new AuthService();
+        public static readonly IService authService = new AuthService();
 
         public Endpoint()
         {
@@ -38,11 +39,17 @@ namespace Middleware
 
             if (message.TokenUser == null)
             {
-                   //TODO LOGIN
+                Message returnMessage = authService.ServiceAction(message);
+
+                callback.MServiceCallback(message);
+
             }
             else
             {
-                //TODO IS AUTH 
+                // TODO IS AUTH 
+
+                ((IToken)authService).IsValidToken(message.TokenUser);
+
                 switch (message.OperationName)
                 {
                     case "DECRYPT":

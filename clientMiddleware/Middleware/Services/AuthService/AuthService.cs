@@ -13,14 +13,17 @@ using System.Reflection.Emit;
 using JWT.Exceptions;
 using JWT.Serializers;
 using Models;
+using Middleware.Services;
+using System.ServiceModel;
+using Middleware.Services.AuthService;
 
 namespace Middleware
 {
-    public class AuthService : IAuthService
+    public class AuthService : IService, IToken
     {
         private readonly string secret = "rjehke456zer21ZAdazdas5";
 
-        public string UserLogin(string login, string pass)
+        public LoginResult UserLogin(string login, string pass)
         {
             //Comment récupérer Login/Password et la connexion a la bdd
 
@@ -52,7 +55,11 @@ namespace Middleware
                 .AddClaim("validation", "yes")
                 .Encode();
 
-            return token;
+            LoginResult result = new LoginResult();
+            result.TokenUser = token;
+            result.IsValid = true;
+
+            return result;
         }
         public bool IsValidToken(string token)
         {
@@ -83,7 +90,14 @@ namespace Middleware
 
         public Message ServiceAction(Message message)
         {
-            throw new NotImplementedException();
+            Credential credential = (Credential)message.Data;
+
+            AuthService auth = new AuthService();
+
+            message.Data = auth.UserLogin(credential.Username, credential.Password);
+            message.OperationName = "TOKEN";
+
+            return message;
         }
 
         public void StopService()
