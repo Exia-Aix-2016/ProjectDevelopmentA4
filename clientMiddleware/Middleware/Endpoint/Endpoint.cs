@@ -1,4 +1,5 @@
 ﻿
+using Middleware.Services;
 using Models;
 using Newtonsoft.Json;
 using System;
@@ -16,6 +17,8 @@ namespace Middleware
     {
         private static readonly ConcurrentDictionary<string, IEndpointCallback> clients = new ConcurrentDictionary<string, IEndpointCallback>();
         private IEndpointCallback callback = null;
+
+        public static readonly IService decryptService = new DecryptService();
 
         public Endpoint()
         {
@@ -42,11 +45,16 @@ namespace Middleware
                 switch (message.OperationName)
                 {
                     case "DECRYPT":
+
+                        decryptService.ServiceAction(message);
+
                         break;
                     case "SOLUTION":
                         if (clients.ContainsKey(message.TokenUser))
                         {
-                            Console.WriteLine(message.TokenUser);
+                            //Stop the process by users
+                            ((IDecryptService)decryptService).StopOperation(message);
+
                             clients[message.TokenUser].MServiceCallback(message);
                         }
                         else

@@ -3,7 +3,6 @@
 namespace Models
 {
     [DataContract]
-    [KnownType(typeof(Credential))]
     public class Message
     {
         [DataMember(Name = "OperationName", EmitDefaultValue = false)]
@@ -18,7 +17,7 @@ namespace Models
         public string Info { get; set; }
 
         [DataMember(Name = "Data", EmitDefaultValue = false)]
-        public object[] Data { get; set; }
+        public object Data { get; set; }
 
         [DataMember(Name = "TokenApp", EmitDefaultValue = false)]
         public string TokenApp { get; set; }

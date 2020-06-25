@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Middleware.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.ServiceModel.Security;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Middleware
@@ -46,10 +48,11 @@ namespace Middleware
                 endpoint.EndpointBehaviors.Add(new WebHttpBehavior());
 
 
-
-
                 Console.WriteLine("Middleware is starting...");
                 serviceHost.Open();
+
+                serviceHost.Closing += (o, a) => Endpoint.decryptService.StopService();
+
 
                 Console.ReadLine();
             }
