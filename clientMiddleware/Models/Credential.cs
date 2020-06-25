@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Models
 {
     [DataContract]
-    public class Credential : Object
+    public class Credential
     {
         [DataMember(Name = "Username", EmitDefaultValue = false)]
         public string Username { get; set; }
