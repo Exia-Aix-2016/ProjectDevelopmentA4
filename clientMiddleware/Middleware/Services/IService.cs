@@ -9,7 +9,7 @@ namespace Middleware.Services
 {
     public interface IService
     {
-        void ServiceAction(Message message);
+        Message ServiceAction(Message message);
         void StopService();
 
     }

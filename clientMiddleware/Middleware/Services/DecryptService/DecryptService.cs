@@ -94,7 +94,7 @@ namespace Middleware.Services
         /// Will add Job into queue.
         /// </summary>
         /// <param name="message"></param>
-        public void ServiceAction(Message message)
+        public Message ServiceAction(Message message)
         {
             var uct = CancellationTokenSource.CreateLinkedTokenSource(globalCancellationSource.Token);
             if (message != null && message.TokenUser != string.Empty)
@@ -105,6 +105,8 @@ namespace Middleware.Services
                     filesQueue.Enqueue(new DecryptMsgNamed { UserToken = message.TokenUser, DecryptMsg = decryptMessage });
                 }  
             }
+
+            return null;
         }
 
         /// <summary>

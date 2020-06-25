@@ -81,7 +81,7 @@ namespace Middleware
             }
         }
 
-        public void ServiceAction(Message message)
+        public Message ServiceAction(Message message)
         {
             throw new NotImplementedException();
         }
