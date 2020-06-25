@@ -1,4 +1,5 @@
 ﻿using Middleware.Services;
+using Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,10 +66,9 @@ namespace Middleware
                 Console.WriteLine("Middleware is starting...");
                 serviceHost.Open();
 
-                serviceHost.Closing += (o, a) => Endpoint.decryptService.StopService();
+                serviceHost.Closed += (o, a) => Endpoint.decryptService.StopService();
 
-
-                Console.ReadLine();
+                Console.ReadKey();
             }
         }
     }

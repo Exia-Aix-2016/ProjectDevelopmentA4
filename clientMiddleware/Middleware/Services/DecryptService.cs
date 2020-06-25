@@ -1,6 +1,7 @@
 ﻿using Middleware.Decrypt;
 using Middleware.Models;
 using Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -11,66 +12,98 @@ using System.Threading.Tasks;
 
 namespace Middleware.Services
 {
+    /// <summary>
+    /// Decrypt Service
+    /// </summary>
     public class DecryptService : IDecryptService
     {
-        private BlockingCollection<DecryptMsgNamed> filesQueue;
-        private CancellationTokenSource cancellationTokenSource;
-
-        private ConcurrentDictionary<string, CancellationTokenSource> cts;
+        private ConcurrentQueue<DecryptMsgNamed> filesQueue;
+        private CancellationTokenSource globalCancellationSource;
+        private ConcurrentDictionary<string, CancellationTokenSource> userCancellationSource;
 
 
 
         public DecryptService()
         {
-            filesQueue = new BlockingCollection<DecryptMsgNamed>();
-            cancellationTokenSource = new CancellationTokenSource();
+            filesQueue = new ConcurrentQueue<DecryptMsgNamed>();
+            globalCancellationSource = new CancellationTokenSource();
+            userCancellationSource = new ConcurrentDictionary<string, CancellationTokenSource>();
 
+          
 
-            for (int i = 0; i < Environment.ProcessorCount - 1; i++)
+            for (int i = 0; i < Environment.ProcessorCount - 1; i++)// -1 to let a thread for our lovely Endpoint
             {
-                ThreadPool.QueueUserWorkItem(Decrypt, cancellationTokenSource.Token);
+                ThreadPool.QueueUserWorkItem(Decrypt, globalCancellationSource.Token);
 
             }
         }
 
-
+        /// <summary>
+        /// Worker
+        /// </summary>
+        /// <param name="obj"></param>
         private void Decrypt(object obj)
         {
-            var token = (CancellationToken)obj;
+            var token = (CancellationToken)obj;//Get the main cancellation token
             XorBreaker xorBreaker = new XorBreaker();
+            
             while (!token.IsCancellationRequested)
             {
-                DecryptMsgNamed decryptMsg = filesQueue.Take(token);
-
-                var byUserToken = cts[decryptMsg.UserToken].Token;
-
-                if (byUserToken.IsCancellationRequested)
+                DecryptMsgNamed decryptMsg;
+                
+                if(filesQueue.TryDequeue(out decryptMsg))
                 {
-                    break;
+                    var TokenCancellatioName = decryptMsg.UserToken + decryptMsg.DecryptMsg.FileName;
+                    //Check by users if a cancellation has been requested.
+                    var byUserToken = userCancellationSource[TokenCancellatioName].Token;
+                    
+                    //Break it !
+                    var result = xorBreaker.BreakXor(decryptMsg.DecryptMsg.CipherText, 4, byUserToken);
+                    //Send Nudes !
+                    Console.WriteLine(result.timeToBreak);
+                    sendResult(result.keyPlains);
+
+
+                    if (byUserToken.IsCancellationRequested)
+                    {
+                        CancellationTokenSource cts;
+                        if(!userCancellationSource.TryRemove(TokenCancellatioName, out cts))
+                        {
+                            throw new RemoveUserCancellationSourceException();
+                        }
+                    }
                 }
 
-                var result = xorBreaker.BreakXor(decryptMsg.DecryptMsg.CipherText, 4);
-
-                sendResult(result.keyPlains);
+                Thread.Sleep(10);//To not overload the thread.
             }
+               
+            Console.WriteLine("DecryptService Thread : " + Thread.CurrentThread.ManagedThreadId + " stopped");
         }
 
+        /// <summary>
+        /// Send result To Backend
+        /// </summary>
+        /// <param name="keyPlain"></param>
         private void sendResult(Dictionary<string,string> keyPlain)
         {
-            //TODO SEND 
+            //TODO: Send Result to Backend (JEE) via Http.
         }
 
 
-
+        /// <summary>
+        /// Will add Job into queue.
+        /// </summary>
+        /// <param name="message"></param>
         public void ServiceAction(Message message)
         {
-            if(message != null && message.TokenUser != string.Empty && cts.TryAdd(message.TokenUser, new CancellationTokenSource()))
+            var uct = CancellationTokenSource.CreateLinkedTokenSource(globalCancellationSource.Token);
+            if (message != null && message.TokenUser != string.Empty)
             {
-                var decryptMessage = (DecryptMsg) message.Data;
-
-                var dmsgN = new DecryptMsgNamed { UserToken = message.TokenUser, DecryptMsg = decryptMessage };
-
-                filesQueue.Add(dmsgN);
+                var decryptMessage = (DecryptMsg)message.Data;
+                if(userCancellationSource.TryAdd(message.TokenUser+decryptMessage.FileName, uct))
+                {
+                    filesQueue.Enqueue(new DecryptMsgNamed { UserToken = message.TokenUser, DecryptMsg = decryptMessage });
+                }  
             }
         }
 
@@ -80,8 +113,18 @@ namespace Middleware.Services
         /// <param name="message"></param>
         public void StopOperation(Message message)
         {
-            if(message != null && message.TokenUser != string.Empty && cts.ContainsKey(message.TokenUser))
-                cts[message.TokenUser].Cancel();
+            if(message != null && message.TokenUser != string.Empty)
+            {
+
+                var cipher = (DecryptMsg)message.Data;
+                if(userCancellationSource.ContainsKey(message.TokenUser + cipher.FileName))
+                {
+                    userCancellationSource[message.TokenUser + cipher.FileName].Cancel();
+                }
+                
+            }
+
+                
         }
 
         /// <summary>
@@ -89,7 +132,8 @@ namespace Middleware.Services
         /// </summary>
         public void StopService()
         {
-            cancellationTokenSource.Cancel();
+            Console.WriteLine(userCancellationSource.Count());
+            globalCancellationSource.Cancel();
         }
     }
 }

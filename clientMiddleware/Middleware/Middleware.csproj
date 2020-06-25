@@ -72,6 +72,7 @@
     <Compile Include="Services\DecryptService.cs" />
     <Compile Include="Services\IDecryptService.cs" />
     <Compile Include="Services\IService.cs" />
+    <Compile Include="Models\Exceptions\RemoveUserCancellationSourceException.cs" />
     <Compile Include="userContext.cs" />
     <Compile Include="Endpoint\Endpoint.cs" />
     <Compile Include="Endpoint\IEndpoint.cs" />

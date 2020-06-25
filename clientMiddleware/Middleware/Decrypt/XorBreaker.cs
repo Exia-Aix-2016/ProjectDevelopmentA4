@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Middleware.Decrypt
@@ -18,7 +19,7 @@ namespace Middleware.Decrypt
         /// <param name="sizeChunk">size of you key</param>
         /// <param name="ic">threshold</param>
         /// <returns>Tuple (string, string) of key and plaintext</returns>
-        public (Dictionary<string, string> keyPlains, long timeToBreak) BreakXor(string cipher, int sizeChunk, double ic = 0.07)
+        public (Dictionary<string, string> keyPlains, long timeToBreak) BreakXor(string cipher, int sizeChunk, CancellationToken token, double ic = 0.07)
         {
             //To calculate the time to break
             Stopwatch sw = new Stopwatch();
@@ -39,7 +40,6 @@ namespace Middleware.Decrypt
                 Dictionary<string, int> blockKeys = new Dictionary<string, int>();
                 foreach (char ch in "ABCDEFGHIJKLMNOPQRSTUVWXYZ")//We know the key is only make with upperCase
                 {
-
                     string text = CryptoTools.Xor(block, char.ToString(ch));
 
                     if (text.IsPrintable() && text.Ic() >= ic - 0.01)//If the block is printable and its index is more than ic-0.01 we add the key into blockKeys
@@ -71,6 +71,9 @@ namespace Middleware.Decrypt
             //For each permutation of keys
             foreach (var elem in CryptoTools.GetPermutationsWithRept(keys.ToList(), sizeChunk))
             {
+                if (token.IsCancellationRequested)
+                    break;
+
                 //Merge char eachothers
                 string key = string.Join("", elem.ToArray());
 
