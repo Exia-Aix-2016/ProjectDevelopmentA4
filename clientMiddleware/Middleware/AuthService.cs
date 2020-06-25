@@ -6,65 +6,80 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
 using System.Runtime.InteropServices;
+using JWT.Algorithms;
+using JWT;
+using JWT.Builder;
+using System.Reflection.Emit;
+using JWT.Exceptions;
+using JWT.Serializers;
 
 namespace Middleware
 {
     class AuthService
     {
-        
-        public void userLogin(string login, string pass)
+
+        public string UserLogin(string login, string pass)
         {
             //Comment récupérer Login/Password et la connexion a la bdd
 
-            userContext user = new userContext();
+            userContext db = new userContext();
 
-            user.Users.Find();
+            bool passBool = db.Users.Where(x => x.Login == login).Any(); //Change to return bool
 
-            string commandLoginString = "SELECT login FROM users WHERE login = @login";
-            SqlParameter paramLogin = new SqlParameter("@login", SqlDbType.Text);
-            paramLogin.Value = login;
-
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            if (!passBool)
             {
-                using (SqlCommand cmd = new SqlCommand(commandLoginString, connection))
-                {
-                    cmd.CommandType = CommandType.Text;
-                    cmd.Parameters.Add(paramLogin);
-
-                    connection.Open();
-                    SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
-
-                    //return reader;
-                };
+                //TODO Retourner au client pour user incorrect
+                // throw error
+                throw new Exception("Login Invalid");
             }
 
 
-            // Check si le mot de passe correspond
-            string commandPassString = "SELECT login FROM users WHERE login = @login AND pass = @pass";
-            SqlParameter paramLogin2 = new SqlParameter("@login", SqlDbType.Text);
-            SqlParameter paramPass = new SqlParameter("@pass", SqlDbType.Text);
-            paramLogin2.Value = login;
-            paramPass.Value = pass;
+            var userBool = db.Users.Where(x => (x.Login == login) && (x.Password == pass)).Any();//SingleOrDefault
 
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            if (!userBool)
             {
-                using (SqlCommand cmd = new SqlCommand(commandPassString, connection))
-                {
-                    cmd.CommandType = CommandType.Text;
-                    cmd.Parameters.Add(paramLogin2);
-                    cmd.Parameters.Add(paramPass);
-
-                    connection.Open();
-                    SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
-
-                    //return reader;
-                };
+                //TODO Retourner au client pour pass incorrect
+                // throw error
+                throw new Exception("Password Invalid");
             }
 
+            const string secret = "rjehke456zer21ZAdazdas5";
+
+            var token = new JwtBuilder()
+                .WithAlgorithm(new HMACSHA256Algorithm()) // symmetric
+                .WithSecret(secret)
+                .AddClaim("validation", "yes")
+                .Encode();
+
+            return token;
         }
-        
-        
-        
-        
+        public bool IsValidToken(string token)
+        {
+            const string secret = "rjehke456zer21ZAdazdas5";
+
+            try
+            {
+                IJsonSerializer serializer = new JsonNetSerializer();
+                var provider = new UtcDateTimeProvider();
+                IJwtValidator validator = new JwtValidator(serializer, provider);
+                IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
+                IJwtAlgorithm algorithm = new HMACSHA256Algorithm(); // symmetric
+                IJwtDecoder decoder = new JwtDecoder(serializer, validator, urlEncoder, algorithm);
+
+                string json = decoder.Decode(token, secret, verify: true);
+                return true;
+
+            }
+            catch (TokenExpiredException)
+            {
+                Console.WriteLine("Token expiré");
+                return false;
+            }
+            catch (SignatureVerificationException)
+            {
+                Console.WriteLine("Signature erronée");
+                return false;
+            }
+        }
     }
 }

@@ -12,13 +12,13 @@ namespace Middleware
         {
             var users = new List<User>
             {
-                new User{Login = "Wharfan", Password = "root"},
-                new User{Login = "Akitoshi", Password = "root"},
-                new User{Login = "Noogat", Password = "root"},
-                new User{Login = "Hougo13", Password = "root"},
-                new User{Login = "BlackWolf", Password = "root"},
-                new User{Login = "GetRice", Password = "root"},
-                new User{Login = "Luzarox", Password = "root"}
+                new User{Login = "quentin@viacesi.fr", Password = "root"},
+                new User{Login = "mandel@viacesi.fr", Password = "root"},
+                new User{Login = "baptiste@viacesi.fr", Password = "root"},
+                new User{Login = "hugo@viacesi.fr", Password = "root"},
+                new User{Login = "luc@viacesi.fr", Password = "root"},
+                new User{Login = "denis@viacesi.fr", Password = "root"},
+                new User{Login = "ludovic@viacesi.fr", Password = "root"}
             };
             users.ForEach(u => context.Users.Add(u));
             context.SaveChanges();
