@@ -134,6 +134,8 @@ namespace Middleware.Services
         {
             Console.WriteLine(userCancellationSource.Count());
             globalCancellationSource.Cancel();
+
+            Console.WriteLine("DecryptService is Closed");
         }
     }
 }

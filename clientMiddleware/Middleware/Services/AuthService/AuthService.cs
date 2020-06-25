@@ -12,18 +12,20 @@ using JWT.Builder;
 using System.Reflection.Emit;
 using JWT.Exceptions;
 using JWT.Serializers;
+using Models;
 
 namespace Middleware
 {
-    class AuthService
+    public class AuthService : IAuthService
     {
+        private readonly string secret = "rjehke456zer21ZAdazdas5";
 
         public string UserLogin(string login, string pass)
         {
             //Comment récupérer Login/Password et la connexion a la bdd
 
             userContext db = new userContext();
-
+            
             bool passBool = db.Users.Where(x => x.Login == login).Any(); //Change to return bool
 
             if (!passBool)
@@ -43,7 +45,6 @@ namespace Middleware
                 throw new Exception("Password Invalid");
             }
 
-            const string secret = "rjehke456zer21ZAdazdas5";
 
             var token = new JwtBuilder()
                 .WithAlgorithm(new HMACSHA256Algorithm()) // symmetric
@@ -55,8 +56,6 @@ namespace Middleware
         }
         public bool IsValidToken(string token)
         {
-            const string secret = "rjehke456zer21ZAdazdas5";
-
             try
             {
                 IJsonSerializer serializer = new JsonNetSerializer();
@@ -80,6 +79,16 @@ namespace Middleware
                 Console.WriteLine("Signature erronée");
                 return false;
             }
+        }
+
+        public void ServiceAction(Message message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StopService()
+        {
+            Console.WriteLine("AuthService is Closed");
         }
     }
 }

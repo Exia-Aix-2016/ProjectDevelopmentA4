@@ -19,6 +19,7 @@ namespace Middleware
         private IEndpointCallback callback = null;
 
         public static readonly IService decryptService = new DecryptService();
+        public static readonly IAuthService authService = new AuthService();
 
         public Endpoint()
         {
