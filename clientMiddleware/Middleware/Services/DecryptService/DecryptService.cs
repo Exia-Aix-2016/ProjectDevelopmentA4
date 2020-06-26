@@ -17,14 +17,17 @@ namespace Middleware.Services
     /// </summary>
     public class DecryptService : IDecryptService
     {
-        private ConcurrentQueue<DecryptMsgNamed> filesQueue;
-        private CancellationTokenSource globalCancellationSource;
-        private ConcurrentDictionary<string, CancellationTokenSource> userCancellationSource;
+        private ConcurrentQueue<DecryptMsgNamed> filesQueue { get; set; }
+        private CancellationTokenSource globalCancellationSource { get; set; }
+        private ConcurrentDictionary<string, CancellationTokenSource> userCancellationSource { get; set; }
+
+        private RequestHttp request { get; set; }
 
 
 
         public DecryptService()
         {
+            request = new RequestHttp(new Uri("http://192.168.20.10:8080/webservice/resources/cipher"));
             filesQueue = new ConcurrentQueue<DecryptMsgNamed>();
             globalCancellationSource = new CancellationTokenSource();
             userCancellationSource = new ConcurrentDictionary<string, CancellationTokenSource>();
@@ -97,9 +100,6 @@ namespace Middleware.Services
                     CipherText = file.Value,
                     Key = file.Key
                 };
-
-
-                request.ContentType = "application/json";
             }
 
         }

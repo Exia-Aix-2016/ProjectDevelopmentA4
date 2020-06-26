@@ -7,13 +7,21 @@ using System.Text;
 using Newtonsoft.Json;
 using System;
 
-namespace Middleware.Services.DecryptService
+namespace Middleware.Services
 {
     public class RequestHttp
     {
+        private Uri url;
+        public RequestHttp(Uri url)
+        {
+            //http://192.168.20.10:8080/webservice/resources/cipher
+
+            this.url = url;
+        }
         public void sendJson(DecryptMsg message)
         {
-            WebRequest request = WebRequest.Create("http://192.168.20.10:8080/webservice/resources/cipher");
+ 
+            WebRequest request = WebRequest.Create(url);
             request.Method = "POST";
             request.ContentType = "application/json";
 
