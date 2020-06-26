@@ -57,7 +57,7 @@ namespace Client
 
 			};
 
-			client.MService(message);
+			client.MServiceAsync(message);
         }
 	}
 }
