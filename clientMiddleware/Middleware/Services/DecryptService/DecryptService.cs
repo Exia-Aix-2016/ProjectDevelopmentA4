@@ -100,6 +100,8 @@ namespace Middleware.Services
                     CipherText = file.Value,
                     Key = file.Key
                 };
+
+                request.sendJson(decryDecryptMsg);
             }
 
         }
