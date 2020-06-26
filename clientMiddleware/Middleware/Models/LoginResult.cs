@@ -5,13 +5,15 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Models
+namespace Middleware.Models
 {
- 
-    public class LoginResult
+    [DataContract]
+     public class LoginResult
     {
+        [DataMember]
         public string TokenUser { get; set; }
 
+        [DataMember]
         public bool IsValid { get; set; }
     }
 }

@@ -12,11 +12,11 @@ using JWT.Builder;
 using System.Reflection.Emit;
 using JWT.Exceptions;
 using JWT.Serializers;
-using Models;
 using Middleware.Services;
 using System.ServiceModel;
 using Middleware.Services.AuthService;
 using Middleware.Models;
+using System.Security.Authentication;
 
 namespace Middleware
 {
@@ -36,7 +36,7 @@ namespace Middleware
             {
                 //TODO Retourner au client pour user incorrect
                 // throw error
-                throw new Exception("Login Invalid");
+                throw new InvalidCredentialException("Login Invalid");
             }
 
 
@@ -46,7 +46,7 @@ namespace Middleware
             {
                 //TODO Retourner au client pour pass incorrect
                 // throw error
-                throw new Exception("Password Invalid");
+                throw new InvalidCredentialException("Password Invalid");
             }
 
 
@@ -91,14 +91,32 @@ namespace Middleware
 
         public Message ServiceAction(Message message)
         {
+            if(message.Data == null)
+            {
+                message.Info = "Data NullReferenceException";
+                message.OperationName = "DROPMESSAGE";
+                return message;
+            }
             Credential credential = (Credential)message.Data;
 
             AuthService auth = new AuthService();
 
-            message.Data = auth.UserLogin(credential.Username, credential.Password);
-            message.OperationName = "TOKEN";
 
-            return message;
+            try
+            {
+                message.Data = auth.UserLogin(credential.Username, credential.Password);
+                message.OperationName = "TOKEN";
+                return message;
+            }
+            catch(Exception err)
+            {
+                message.OperationName = "DROPMESSAGE";
+                message.Info = err.ToString();
+                message.Data = null;
+                return message;
+
+            }
+            
         }
 
         public void StopService()

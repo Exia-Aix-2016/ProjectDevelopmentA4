@@ -3,6 +3,9 @@
 namespace Middleware.Models
 {
     [DataContract]
+    [KnownType(typeof(Credential))]
+    [KnownType(typeof(LoginResult))]
+    [KnownType(typeof(DecryptMsg))]
     public class Message
     {
         [DataMember(Name = "OperationName", EmitDefaultValue = false)]

@@ -2,7 +2,6 @@
 using Middleware.Models;
 using Middleware.Services;
 using Middleware.Services.AuthService;
-using Models;
 using System;
 using System.Collections.Concurrent;
 using System.ServiceModel;
@@ -32,6 +31,8 @@ namespace Middleware
         {
             if (callback != null && message.TokenUser != null && message.TokenUser != string.Empty)
                 clients.AddOrUpdate(message.TokenUser, callback, (k, v) => callback);
+
+            Console.WriteLine(message.OperationName);
 
             if (message.TokenUser == null && message.OperationName == "AUTHENTIFICATION")
             {

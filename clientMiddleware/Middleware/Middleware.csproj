@@ -62,6 +62,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Credential.cs" />
+    <Compile Include="Models\DecryptMsg.cs" />
+    <Compile Include="Models\LoginResult.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Services\AuthService\AuthService.cs" />
     <Compile Include="Decrypt\CryptoTools.cs" />
