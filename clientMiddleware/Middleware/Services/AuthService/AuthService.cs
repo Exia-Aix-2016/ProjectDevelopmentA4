@@ -26,32 +26,23 @@ namespace Middleware
 
         public LoginResult UserLogin(string login, string pass)
         {
-            //Comment récupérer Login/Password et la connexion a la bdd
-
             userContext db = new userContext();
-            
-            bool passBool = db.Users.Where(x => x.Login == login).Any(); //Change to return bool
+            bool passBool = db.Users.Where(x => x.Login == login).Any(); 
 
             if (!passBool)
             {
-                //TODO Retourner au client pour user incorrect
-                // throw error
                 throw new InvalidCredentialException("Login Invalid");
             }
 
-
-            var userBool = db.Users.Where(x => (x.Login == login) && (x.Password == pass)).Any();//SingleOrDefault
+            var userBool = db.Users.Where(x => (x.Login == login) && (x.Password == pass)).Any();
 
             if (!userBool)
             {
-                //TODO Retourner au client pour pass incorrect
-                // throw error
                 throw new InvalidCredentialException("Password Invalid");
             }
 
-
             var token = new JwtBuilder()
-                .WithAlgorithm(new HMACSHA256Algorithm()) // symmetric
+                .WithAlgorithm(new HMACSHA256Algorithm())
                 .WithSecret(secret)
                 .AddClaim("validation", "yes")
                 .Encode();
@@ -97,10 +88,9 @@ namespace Middleware
                 message.OperationName = "DROPMESSAGE";
                 return message;
             }
+
             Credential credential = (Credential)message.Data;
-
             AuthService auth = new AuthService();
-
 
             try
             {

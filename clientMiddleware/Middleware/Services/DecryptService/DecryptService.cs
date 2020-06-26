@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -60,7 +61,7 @@ namespace Middleware.Services
                     var result = xorBreaker.BreakXor(decryptMsg.DecryptMsg.CipherText, 4, byUserToken);
                     //Send Nudes !
                     Console.WriteLine(result.timeToBreak);
-                    sendResult(result.keyPlains);
+                    Task.Run(() => sendResult(decryptMsg.DecryptMsg.FileName, result.keyPlains));
 
 
                     if (byUserToken.IsCancellationRequested)
@@ -83,9 +84,24 @@ namespace Middleware.Services
         /// Send result To Backend
         /// </summary>
         /// <param name="keyPlain"></param>
-        private void sendResult(Dictionary<string,string> keyPlain)
+        private void sendResult(string filename, Dictionary<string,string> keyPlain)
         {
             //TODO: Send Result to Backend (JEE) via Http.
+
+            //KeyPlain : [CLEF : Texte en clair]
+            foreach(var file in keyPlain)
+            {
+                DecryptMsg decryDecryptMsg = new DecryptMsg
+                {
+                    FileName = filename,
+                    CipherText = file.Value,
+                    Key = file.Key
+                };
+
+
+                request.ContentType = "application/json";
+            }
+
         }
 
 

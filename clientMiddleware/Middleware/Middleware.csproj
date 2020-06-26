@@ -76,6 +76,7 @@
     <Compile Include="Services\AuthService\IToken.cs" />
     <Compile Include="Services\DecryptService\DecryptService.cs" />
     <Compile Include="Services\DecryptService\IDecryptService.cs" />
+    <Compile Include="Services\DecryptService\RequestHttp.cs" />
     <Compile Include="Services\IService.cs" />
     <Compile Include="Models\Exceptions\RemoveUserCancellationSourceException.cs" />
     <Compile Include="userContext.cs" />
