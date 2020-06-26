@@ -12,7 +12,6 @@ using System.Windows.Shapes;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
-using Models;
 using Middleware.Models;
 
 namespace Client
