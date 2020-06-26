@@ -21,7 +21,8 @@ public class TrustFactorServiceBean implements MessageListener {
     
     @Override
     public void onMessage(Message msg) {
-        System.out.print(worldManagerServiceBean.getWords(0));
+        System.out.print(msg);
+        System.out.print(worldManagerServiceBean.getWords(10000));
     }
     
     

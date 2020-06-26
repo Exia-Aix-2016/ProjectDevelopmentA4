@@ -12,8 +12,8 @@ public class WordManagerServiceBean {
     @PersistenceContext(unitName = "persistenceUnit")
     private EntityManager entityManager;
     
-    public List<Word> getWords(int frequency){     
-        Query query = entityManager.createQuery("SELECT w FROM Word w", Word.class).setMaxResults(frequency);
+    public List<Word> getWords(int frequencyMin){     
+        Query query = entityManager.createQuery("SELECT w FROM Word w WHERE w.frequency >= :frequencyMin", Word.class).setParameter("frequencyMin", frequencyMin);
         return query.getResultList();
     }
     
