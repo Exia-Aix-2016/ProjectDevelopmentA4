@@ -1,9 +1,7 @@
 package fr.exiaaix.backend.webservice;
 import javax.annotation.Resource;
 import javax.inject.Inject;
-import javax.jms.ConnectionFactory;
 import javax.jms.JMSConnectionFactory;
-import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.Queue;
@@ -27,12 +25,8 @@ public class WebService {
 
     @POST()
     public Response checkCipher(CipherParam cipherParam) throws JMSException{
-        
-        //start check db
-        
         TextMessage textMessage = context.createTextMessage(cipherParam.getPlanText());
-        context.createProducer().send(messagingQueue, textMessage);
-        
+        context.createProducer().send(messagingQueue, textMessage);        
         return Response.status(Response.Status.OK).entity(cipherParam.getPlanText()).type(MediaType.TEXT_PLAIN).build(); 
     }
 
