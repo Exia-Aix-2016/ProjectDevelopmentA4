@@ -18,17 +18,16 @@ namespace Client
 {
     public partial class MainWindow : Window
     {
-        private InstanceContext instanceContext;
-        private EndpointClient endpointClient;
-        WebService newAppli = new WebService();
+        WebService webService = WebService.Instance;
+        Appli appli = new Appli();
 
         public MainWindow()
         {
             InitializeComponent();
+            
+            this.webService.Update += this.Notify;
 
-            ClientCallbackHandler.Update += Notify;
-            instanceContext = new InstanceContext(new ClientCallbackHandler());
-            endpointClient = new EndpointClient(instanceContext);
+            this.Closed += (o, e) => this.webService.Update -= this.Notify;
         }
 
         public void Notify(Message message)
@@ -62,13 +61,13 @@ namespace Client
                 }
                 else
                 {
-                    newAppli.LaunchAppli();
+                    webService.Login(email, password);
+                    appli.Show();
                     Close();
                 }
             }
         }
 
-        ~MainWindow() { Console.Out.WriteLine("Destruction main window"); }
     }
 
 }

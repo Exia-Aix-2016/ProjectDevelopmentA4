@@ -11,17 +11,28 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Middleware.Models;
 
 namespace Client
 {
     public partial class Processing : Window
     {
+        WebService webService = WebService.Instance;
+
         public Processing()
         {
             InitializeComponent();
+
+            this.webService.Update += this.Notify;
+
+            this.Closed += (o, e) => this.webService.Update -= this.Notify;
         }
 
-        ~Processing() { Console.Out.WriteLine("Destruction Processing"); }
+        public void Notify(Message message)
+        {
+            Console.WriteLine(message.OperationName);
+        }
+
     }
 
 }
