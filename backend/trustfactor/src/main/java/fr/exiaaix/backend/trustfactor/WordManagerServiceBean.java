@@ -9,13 +9,12 @@ import javax.persistence.Query;
 @ApplicationScoped
 public class WordManagerServiceBean {
     
-    @PersistenceContext(unitName = "XE")
+    @PersistenceContext(unitName = "persistenceUnit")
     private EntityManager entityManager;
     
-    public List<Word> getWords(){     
-        Query query = entityManager.createQuery("SELECT w FROM Word w", Word.class);
+    public List<Word> getWords(int frequency){     
+        Query query = entityManager.createQuery("SELECT w FROM Word w", Word.class).setMaxResults(frequency);
         return query.getResultList();
     }
-    
     
 }
