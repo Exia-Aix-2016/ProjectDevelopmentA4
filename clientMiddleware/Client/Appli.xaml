@@ -5,10 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="Appli" Height="450" Width="800">
-    <DockPanel Margin="475,10,13,89">
-        <WrapPanel HorizontalAlignment="Center" DockPanel.Dock="Top" Margin="0,0,0,10">
-            <Button Name="btnOpenFile" Click="btnOpenFiles_Click">Open files</Button>
+    <Grid Margin="470,35,18,64">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="129*"/>
+            <ColumnDefinition Width="23*"/>
+        </Grid.ColumnDefinitions>
+        <WrapPanel HorizontalAlignment="Center" Margin="124,0,77.721,10" RenderTransformOrigin="0.541,0.704">
+            <Button x:Name="btnOpenFile" Click="btnOpenFiles_Click" Content="Open files"/>
         </WrapPanel>
-        <ListBox Name="fileUpload" Margin="0,108,0,86" Width="272" />
-    </DockPanel>
+        <ListBox Name="fileUpload" Margin="10,32,22,94" Width="272" Grid.ColumnSpan="2" />
+        <Button Content="Upload" Height="30" Margin="87,249,40.721,0" Click="btnUpload_Click" VerticalAlignment="Top" Width="130"/>
+
+
+    </Grid>
 </Window>

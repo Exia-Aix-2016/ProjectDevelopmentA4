@@ -20,7 +20,7 @@ namespace Client
     {
         private InstanceContext instanceContext;
         private EndpointClient endpointClient;
-        Appli appli = new Appli();
+        WebService newAppli = new WebService();
 
         public MainWindow()
         {
@@ -62,11 +62,13 @@ namespace Client
                 }
                 else
                 {
-                    appli.Show();
+                    newAppli.LaunchAppli();
                     Close();
                 }
             }
         }
+
+        ~MainWindow() { Console.Out.WriteLine("Destruction main window"); }
     }
 
 }

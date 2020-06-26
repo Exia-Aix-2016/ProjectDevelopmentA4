@@ -3,19 +3,90 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d"
        
-        Title="Login" Height="350" Width="525">
+        Title="Login" Height="350" Width="525"
+        AllowsTransparency="True" Background="Transparent"
+        WindowStyle="None" ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        >
 
     <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="121*"/>
+                <RowDefinition Height="229*"/>
+            </Grid.RowDefinitions>
 
-        <TextBlock Height="23" HorizontalAlignment="Left" Margin="66,120,0,0" Name="textBlock1" Text="Email" VerticalAlignment="Top" Width="67" />
-        <TextBlock Height="23" HorizontalAlignment="Left" Margin="58,168,0,0" Name="textBlock2" Text="Password" VerticalAlignment="Top" Width="77" />
-        <TextBox Height="23" HorizontalAlignment="Left" Margin="118,115,0,0" Name="textBoxEmail" VerticalAlignment="Top" Width="247" />
-        <PasswordBox Height="23" HorizontalAlignment="Left" Margin="118,168,0,0" Name="passwordBox1" VerticalAlignment="Top" Width="247" />
 
-        <Button Content="Login" Height="23" HorizontalAlignment="Left" Margin="118,211,0,0" Name="loginButton" VerticalAlignment="Top" Width="104" Click="Login_Click"/>
+            <Border CornerRadius="10" Grid.RowSpan="2">
+                <Border.Background>
+                    <LinearGradientBrush>
+                        <GradientStop Color="DeepSkyBlue" Offset="0.0"/>
+                        <GradientStop Color="RoyalBlue" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
 
-        <TextBlock Height="23" HorizontalAlignment="Left" x:Name ="errormessage" VerticalAlignment="Top" Width="247" Margin="118,253,0,0"  OpacityMask="Crimson" Foreground="#FFE5572C"/>
+
+            <StackPanel Grid.Row="1" >
+                <StackPanel Orientation="Horizontal">
+                    <TextBox FontFamily="Helvetica"
+                            FontWeight="Light"
+                            Text="Username"
+                            FontSize="20"
+                            HorizontalAlignment="Center"
+                            Foreground="White"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Width="235"
+                            HorizontalContentAlignment="Left"
+                            Opacity="0.5"
+                            Height="25"
+                            Margin="140,0,0,0"
+                            x:Name="textBoxEmail"
+                             />
+                </StackPanel>
+                <Border Width="250"
+                       Height="2"
+                       Background="White"
+                       Opacity="0.5"/>
+                <StackPanel Height="32">
+                    <TextBlock Height="23" HorizontalAlignment="Left" x:Name ="errormessage" VerticalAlignment="Top" Width="247" Margin="118,253,0,0"  OpacityMask="Crimson" Foreground="#FFE5572C"/>
+                </StackPanel>
+
+
+
+                <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                    <PasswordBox FontFamily="Helvetica"
+                            FontWeight="Light"
+                            Password="Password"
+                            FontSize="20"
+                            HorizontalAlignment="Center"
+                            Foreground="White"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Width="235"
+                            HorizontalContentAlignment="Left"
+                            Opacity="0.5"
+                            Height="25"
+                            Margin="140,0,0,0"
+                            x:Name="passwordBox1"
+                            />
+                </StackPanel>
+                <Border Width="250"
+                       Height="2"
+                       Background="White"
+                       Opacity="0.5"/>
+
+
+                <StackPanel Orientation="Horizontal" Margin="0,50,0,0">
+                    <Button Width="100" Height="40" Content="LOGIN" x:Name="loginButton" Margin="400,0,60,0 " Click="Login_Click"/>
+                </StackPanel>
+
+            </StackPanel>
+
+        </Grid>
     </Grid>
 </Window>

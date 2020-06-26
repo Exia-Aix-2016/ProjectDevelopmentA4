@@ -57,6 +57,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="WebService.cs" />
     <Compile Include="Connected Services\EndpointServiceRef\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -64,6 +65,9 @@
     </Compile>
     <Compile Include="Appli.xaml.cs">
       <DependentUpon>Appli.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Processing.xaml.cs">
+      <DependentUpon>Processing.xaml</DependentUpon>
     </Compile>
     <Compile Include="WCFClient.cs" />
     <Page Include="MainWindow.xaml">
@@ -80,6 +84,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Appli.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Processing.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
