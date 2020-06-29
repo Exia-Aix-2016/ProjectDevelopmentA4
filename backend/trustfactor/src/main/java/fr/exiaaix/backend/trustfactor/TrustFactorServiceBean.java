@@ -15,6 +15,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
+import java.io.IOException;
 import java.lang.reflect.Type;
 
 @MessageDriven(mappedName = "jms/messagingQueue", activationConfig =  {  
@@ -25,6 +26,9 @@ public class TrustFactorServiceBean implements MessageListener {
     
     @Inject
     private WordManagerServiceBean worldManagerServiceBean;
+
+    @Inject
+    WebClientServiceBean webClient;
     
     @Inject
     private PdfServiceBean pdfServiceBean;
@@ -45,10 +49,10 @@ public class TrustFactorServiceBean implements MessageListener {
 
         try {
             serviceMessage = gson.fromJson(text.getText(), type);
+
         } catch (JMSException e) {
             e.printStackTrace();
         }
-
 
         //System.out.print(worldManagerServiceBean.getWords(10000));
         try {
@@ -57,7 +61,7 @@ public class TrustFactorServiceBean implements MessageListener {
         } catch (IOException ex) {
             Logger.getLogger(TrustFactorServiceBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-                
+
     }
     
     
