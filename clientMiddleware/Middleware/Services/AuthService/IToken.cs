@@ -9,5 +9,6 @@ namespace Middleware.Services.AuthService
     public interface IToken
     {
         bool IsValidToken(string token);
+        bool IsValidAppToken(string token);
     }
 }

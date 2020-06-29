@@ -23,6 +23,7 @@ namespace Middleware
     public class AuthService : IService, IToken
     {
         private readonly string secret = "rjehke456zer21ZAdazdas5";
+        private const string APP_TOKEN = "e2lOmEf7z2YcWNOsMgwxrytjcOftPwpi";
 
         public LoginResult UserLogin(string login, string pass)
         {
@@ -55,6 +56,7 @@ namespace Middleware
         }
         public bool IsValidToken(string token)
         {
+            if (token == null || token == string.Empty) return false;
             try
             {
                 IJsonSerializer serializer = new JsonNetSerializer();
@@ -84,17 +86,17 @@ namespace Middleware
         {
             if(message.Data == null)
             {
-                message.Info = "Data NullReferenceException";
-                message.OperationName = "DROPMESSAGE";
+                message.Info = "Data Null";
+                message.OperationName = "DROP";
                 return message;
             }
 
             Credential credential = (Credential)message.Data;
-            AuthService auth = new AuthService();
+            
 
             try
             {
-                message.Data = auth.UserLogin(credential.Username, credential.Password);
+                message.Data = UserLogin(credential.Username, credential.Password);
                 message.OperationName = "TOKEN";
                 return message;
             }
@@ -112,6 +114,13 @@ namespace Middleware
         public void StopService()
         {
             Console.WriteLine("AuthService is Closed");
+        }
+
+        public bool IsValidAppToken(string token)
+        {
+            if (token == null || token == string.Empty) return false;
+
+            return token == APP_TOKEN;
         }
     }
 }

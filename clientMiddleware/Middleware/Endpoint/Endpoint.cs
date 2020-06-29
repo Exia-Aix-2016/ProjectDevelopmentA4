@@ -29,23 +29,32 @@ namespace Middleware
 
         public void MService(Message message)
         {
+            var authServiceToken = ((IToken)authService);
+
+
             if (callback != null && message.TokenUser != null && message.TokenUser != string.Empty)
                 clients.AddOrUpdate(message.TokenUser, callback, (k, v) => callback);
 
-            Console.WriteLine(message.OperationName);
-
-            if (message.TokenUser == null && message.OperationName == "AUTHENTIFICATION")
+            
+            //Check if user is not authentified (tokenUser == null && OpName == AUTHENTIFICATION) and Also check AppToken
+            if (message.TokenUser == null && authServiceToken.IsValidAppToken(message.TokenApp) && message.OperationName == "AUTHENTIFICATION")
             {
                 Message returnMessage = authService.ServiceAction(message);
-
-                callback.MServiceCallback(message);
+                callback.MServiceCallback(returnMessage);
 
             }
             else if(message.TokenUser != null)
             {
                 // TODO IS AUTH 
+                
 
-                ((IToken)authService).IsValidToken(message.TokenUser);
+                if (!authServiceToken.IsValidToken(message.TokenUser) || !authServiceToken.IsValidAppToken(message.TokenApp))
+                {
+                    message.OperationName = "DROP";
+                    message.Info = "Invalid Tokens (user or app)";
+                    clients[message.TokenUser].MServiceCallback(message);
+                    return;
+                }
 
                 switch (message.OperationName)
                 {

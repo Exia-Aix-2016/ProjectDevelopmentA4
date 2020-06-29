@@ -18,7 +18,10 @@ namespace Client
 		private ClientCallbackHandler clientCallbackHandler;
 		private InstanceContext context;
 		private EndpointClient client;
-		private string token;
+		private string userToken;
+		private const string APP_TOKEN = "e2lOmEf7z2YcWNOsMgwxrytjcOftPwpi";
+
+
 
 		private WebService()
 		{
@@ -38,7 +41,7 @@ namespace Client
 			if (message.OperationName == "TOKEN")
             {
 				LoginResult result = (LoginResult) message.Data;
-				token = result.TokenUser;
+				userToken = result.TokenUser;
             }
 			Update?.Invoke(message);
 			
@@ -53,7 +56,8 @@ namespace Client
 					Username = username,
 					Password = password
 				},
-				OperationName = "AUTHENTIFICATION"
+				OperationName = "AUTHENTIFICATION",
+				TokenApp = APP_TOKEN
 
 			};
 
