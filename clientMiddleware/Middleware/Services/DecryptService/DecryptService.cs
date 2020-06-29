@@ -61,11 +61,12 @@ namespace Middleware.Services
                     var byUserToken = userCancellationSource[TokenCancellatioName].Token;
                     
                     //Break it !
-                    var result = xorBreaker.BreakXor(decryptMsg.DecryptMsg.CipherText, 4, byUserToken, 0.06);
-                    //Send Nudes !
-                    sendResult(decryptMsg.DecryptMsg.FileName, result.keyPlains);
-
-
+                    foreach(var kv in xorBreaker.breakXor(decryptMsg.DecryptMsg.CipherText, 4, byUserToken, 0.06))
+                    {
+                        sendResult(decryptMsg.DecryptMsg.FileName, kv);
+                    }
+  
+                    
                     if (byUserToken.IsCancellationRequested)
                     {
                         CancellationTokenSource cts;
@@ -86,22 +87,20 @@ namespace Middleware.Services
         /// Send result To Backend
         /// </summary>
         /// <param name="keyPlain"></param>
-        private void sendResult(string filename, Dictionary<string,string> keyPlain)
+        private void sendResult(string filename, KeyValuePair<string, string> keyPlain)
         {
             //TODO: Send Result to Backend (JEE) via Http.
 
             //KeyPlain : [CLEF : Texte en clair]
-            foreach(var file in keyPlain)
+            DecryptMsg decryDecryptMsg = new DecryptMsg
             {
-                DecryptMsg decryDecryptMsg = new DecryptMsg
-                {
-                    FileName = filename,
-                    CipherText = file.Value,
-                    Key = file.Key
-                };
+                FileName = filename,
+                CipherText = keyPlain.Value,
+                Key = keyPlain.Key
+            };
 
-                request.sendJson(decryDecryptMsg);
-            }
+            request.sendJson(decryDecryptMsg);
+            
 
         }
 
@@ -150,7 +149,7 @@ namespace Middleware.Services
         /// </summary>
         public void StopService()
         {
-            Console.WriteLine(userCancellationSource.Count());
+            Console.WriteLine("Count Token Cancellation : " + userCancellationSource.Count());
             globalCancellationSource.Cancel();
 
             Console.WriteLine("DecryptService is Closed");

@@ -25,7 +25,8 @@ namespace MiddlewareUnitTests
 
 
             var cipher = CryptoTools.Xor(readText, "TEST");
-            Console.WriteLine(readText.Ic());
+
+
             decryptService.ServiceAction(new Message { 
                 Data = new DecryptMsg { 
                     CipherText = cipher, 
@@ -33,8 +34,34 @@ namespace MiddlewareUnitTests
                 OperationName = "DECRYPT",
                 TokenUser = "TEST"});
 
+            decryptService.ServiceAction(new Message
+            {
+                Data = new DecryptMsg
+                {
+                    CipherText = File.ReadAllText("test2.txt"),
+                    FileName = "test2.txt"
+                },
+                OperationName = "DECRYPT",
+                TokenUser = "TEST"
+            });
+
+            decryptService.ServiceAction(new Message
+            {
+                Data = new DecryptMsg
+                {
+                    CipherText = File.ReadAllText("test3.txt"),
+                    FileName = "test3.txt"
+                },
+                OperationName = "DECRYPT",
+                TokenUser = "TEST"
+            });
+
+
 
             Thread.Sleep(5000);
+
+
+            decryptService.StopService();
 
 
         }
