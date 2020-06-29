@@ -29,53 +29,41 @@ namespace Middleware.Decrypt
             //Used to bypass the break by index of coincidence.
             bool bypass = false;
 
-            if (cipher.Length >= 1000000)
-            {
-
-                bypass = true;
-            }
             //will contains the potential key used to encrypt the message
             string keys = "";
 
 
-            if (!bypass)
+            var blocks = CryptoTools.DivideText(cipher, sizeChunk).ToList();
+            var trans = CryptoTools.Transposed(blocks);
+
+            foreach (var block in trans)
             {
-                var blocks = CryptoTools.DivideText(cipher, sizeChunk).ToList();
-                var trans = CryptoTools.Transposed(blocks);
-
-                
-
-                foreach (var block in trans)
+                Dictionary<string, int> blockKeys = new Dictionary<string, int>();
+                foreach (char ch in "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
                 {
-                    Dictionary<string, int> blockKeys = new Dictionary<string, int>();
-                    foreach (char ch in "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+                    string text = CryptoTools.Xor(block, char.ToString(ch));
+
+                    if (text.IsPrintable() && text.Ic() >= ic - 0.01)//If the block is printable and its index is more than ic-0.01 we add the key into blockKeys
                     {
-
-                        string text = CryptoTools.Xor(block, char.ToString(ch));
-
-                        if (text.IsPrintable() && text.Ic() >= ic - 0.01)//If the block is printable and its index is more than ic-0.01 we add the key into blockKeys
+                        var c = char.ToString(ch);
+                        if (blockKeys.ContainsKey(c))
                         {
-                            var c = char.ToString(ch);
-                            if (blockKeys.ContainsKey(c))
-                            {
-                                blockKeys[c] += 1;
-
-                            }
-                            else
-                            {
-                                blockKeys.Add(c, 1);
-                            }
+                            blockKeys[c] += 1;
 
                         }
-                    }
-                    //We order the letter to make the permutation process easier.
-                    keys += string.Join("", blockKeys.OrderBy(c => c.Value).Select(a => a.Key).ToArray());
+                        else
+                        {
+                            blockKeys.Add(c, 1);
+                        }
 
+                    }
                 }
-                keys = string.Join("", keys.GroupBy(c => c).Select(c => char.ToString(c.Key)).ToArray());
+                //We order the letter to make the permutation process easier.
+                keys += string.Join("", blockKeys.OrderBy(c => c.Value).Select(a => a.Key).ToArray());
 
             }
-
+            keys = string.Join("", keys.GroupBy(c => c).Select(c => char.ToString(c.Key)).ToArray());
 
             if (keys.Length == 0)
             {
