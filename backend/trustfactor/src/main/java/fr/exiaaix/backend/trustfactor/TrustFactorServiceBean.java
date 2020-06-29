@@ -25,7 +25,7 @@ import java.util.List;
 public class TrustFactorServiceBean implements MessageListener {
     
     @Inject
-    private WordManagerServiceBean worldManagerServiceBean;
+    private WordManagerServiceBean wordManagerServiceBean;
 
     @Inject
     WebClientServiceBean webClient;
@@ -42,13 +42,13 @@ public class TrustFactorServiceBean implements MessageListener {
     @Override
     public void onMessage(Message msg) {
         
-        ServiceMessage<DecryptData> serviceMessage = convertMessage(msg);
+        //ServiceMessage<DecryptData> serviceMessage = convertMessage(msg);
 
-        double percentage = calculatePercentage(serviceMessage.Data.PlainText);
+        //double percentage = calculatePercentage(serviceMessage.Data.PlainText);
         
-        System.out.println(percentage + "%");
+        //System.out.println(percentage + "%");
         
-        generatePdf(serviceMessage);     
+        //generatePdf(serviceMessage);     
                      
     }
     
