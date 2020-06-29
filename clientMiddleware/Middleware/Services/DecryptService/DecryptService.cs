@@ -25,9 +25,9 @@ namespace Middleware.Services
 
 
 
-        public DecryptService()
+        public DecryptService(Uri uri)
         {
-            request = new RequestHttp(new Uri("http://192.168.20.10:8080/webservice/resources/cipher"));
+            request = new RequestHttp(uri);
             filesQueue = new ConcurrentQueue<DecryptMsgNamed>();
             globalCancellationSource = new CancellationTokenSource();
             userCancellationSource = new ConcurrentDictionary<string, CancellationTokenSource>();
@@ -61,10 +61,9 @@ namespace Middleware.Services
                     var byUserToken = userCancellationSource[TokenCancellatioName].Token;
                     
                     //Break it !
-                    var result = xorBreaker.BreakXor(decryptMsg.DecryptMsg.CipherText, 4, byUserToken);
+                    var result = xorBreaker.BreakXor(decryptMsg.DecryptMsg.CipherText, 4, byUserToken, 0.06);
                     //Send Nudes !
-                    Console.WriteLine(result.timeToBreak);
-                    Task.Run(() => sendResult(decryptMsg.DecryptMsg.FileName, result.keyPlains));
+                    sendResult(decryptMsg.DecryptMsg.FileName, result.keyPlains);
 
 
                     if (byUserToken.IsCancellationRequested)

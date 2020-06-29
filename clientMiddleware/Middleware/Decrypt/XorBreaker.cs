@@ -61,7 +61,7 @@ namespace Middleware.Decrypt
 
             }
             keys = string.Join("", keys.GroupBy(c => c).Select(c => char.ToString(c.Key)).ToArray());
-
+            Console.WriteLine(keys);
             if (keys.Length == 0)
             {
                 sw.Stop();

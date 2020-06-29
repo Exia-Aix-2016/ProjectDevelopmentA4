@@ -14,7 +14,7 @@ namespace Middleware
         private static readonly ConcurrentDictionary<string, IEndpointCallback> clients = new ConcurrentDictionary<string, IEndpointCallback>();
         private IEndpointCallback callback = null;
 
-        public static readonly IService decryptService = new DecryptService();
+        public static readonly IService decryptService = new DecryptService(new Uri("http://192.168.20.10:8080/webservice/resources/cipher"));
         public static readonly IService authService = new AuthService();
 
         public Endpoint()
