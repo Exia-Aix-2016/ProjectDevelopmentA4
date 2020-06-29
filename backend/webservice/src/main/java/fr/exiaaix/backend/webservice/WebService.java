@@ -24,10 +24,13 @@ public class WebService {
     private Queue messagingQueue;
 
     @POST()
-    public Response checkCipher(CipherParam cipherParam) throws JMSException{
-        TextMessage textMessage = context.createTextMessage(cipherParam.getPlanText());
-        context.createProducer().send(messagingQueue, textMessage);        
-        return Response.status(Response.Status.OK).entity(cipherParam.getPlanText()).type(MediaType.TEXT_PLAIN).build(); 
+    public Response checkCipher(String x) throws JMSException{
+
+        TextMessage textMessage = context.createTextMessage(x);
+
+        context.createProducer().send(messagingQueue, textMessage);
+
+        return Response.status(Response.Status.OK).build();
     }
 
     
