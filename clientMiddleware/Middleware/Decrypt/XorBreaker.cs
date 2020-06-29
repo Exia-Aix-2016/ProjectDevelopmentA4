@@ -21,6 +21,13 @@ namespace Middleware.Decrypt
         /// <returns>Tuple (string, string) of key and plaintext</returns>
         public (Dictionary<string, string> keyPlains, long timeToBreak) BreakXor(string cipher, int sizeChunk, CancellationToken token, double ic = 0.07)
         {
+
+            //Will contains all potential keys and their matching plain.
+            Dictionary<string, string> keyPlains = new Dictionary<string, string>();
+
+            //Security if cipher is empty
+            if (cipher == string.Empty) return (keyPlains, 0);
+
             //To calculate the time to break
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -32,8 +39,8 @@ namespace Middleware.Decrypt
             //will contains the potential key used to encrypt the message
             string keys = "";
 
-            //Will contains all potential keys and their matching plain.
-            Dictionary<string, string> keyPlains = new Dictionary<string, string>();
+            
+
 
             foreach (var block in trans)
             {
