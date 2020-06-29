@@ -1,10 +1,14 @@
 package fr.exiaaix.backend.trustfactor;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import javax.ejb.Stateless;
+import javax.swing.text.Document;
 
+import fr.exiaaix.backend.trustfactor.models.DecryptData;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -13,24 +17,40 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 @Stateless
 public class PdfServiceBean {
 
-    public byte[] createPdf(byte[] message, String name) throws IOException {
-        PDDocument document = new PDDocument();
-        PDPage page = new PDPage();
-        document.addPage(page);
+    public byte[] createPdf(DecryptData decryptData) throws IOException {
 
-        PDPageContentStream contentStream = new PDPageContentStream(document, page);
+        try(PDDocument doc =  new PDDocument()){
+            PDPage page = new PDPage();
 
-        contentStream.setFont(PDType1Font.COURIER, 12);
-        contentStream.beginText();
-        contentStream.showText(message.toString());
-        contentStream.endText();
-        contentStream.close();
+            doc.addPage(page);
 
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        document.save(byteArrayOutputStream);
-        
-        document.close();
+            try(PDPageContentStream contentStream = new PDPageContentStream(doc, page)){
+                contentStream.beginText();
+                contentStream.setFont(PDType1Font.COURIER, 12);
 
-        return byteArrayOutputStream.toByteArray();
+                //DOCUMENT NAME
+                contentStream.newLine();
+                contentStream.showText("Document name : " + decryptData.FileName);
+
+                //KEY
+                contentStream.newLine();
+                contentStream.showText("key : " + decryptData.Key);
+                contentStream.newLine();
+
+                //PLAINTEXT
+                contentStream.showText("PlainText : ");
+                contentStream.newLine();
+                contentStream.showText(decryptData.PlainText);
+                contentStream.newLine();
+                contentStream.endText();
+            }
+
+            //PDF To ByteArray
+            try(ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()){
+                doc.save(byteArrayOutputStream);
+                System.out.println(byteArrayOutputStream.toString());
+                return byteArrayOutputStream.toByteArray();
+            }
+        }
     }
 }

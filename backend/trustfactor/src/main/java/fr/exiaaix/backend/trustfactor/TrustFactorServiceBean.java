@@ -44,12 +44,18 @@ public class TrustFactorServiceBean implements MessageListener {
         
        ServiceMessage<DecryptData> serviceMessage = convertMessage(msg);
 
-        double percentage = calculatePercentage(serviceMessage.Data.PlainText, listWord);
+        //double percentage = calculatePercentage(serviceMessage.Data.PlainText, listWord);
         
-        System.out.println(percentage + "%");
+        //System.out.println(percentage + "%");
         
-        generatePdf(serviceMessage);     
-                     
+        serviceMessage.Data.Report =  generatePdf(serviceMessage);
+
+        try {
+            webClient.sendResult(serviceMessage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
     
     private ServiceMessage<DecryptData> convertMessage(Message msg){
@@ -82,11 +88,12 @@ public class TrustFactorServiceBean implements MessageListener {
        
     }
     
-    private void generatePdf(ServiceMessage<DecryptData> serviceMessage){
+    private byte[] generatePdf(ServiceMessage<DecryptData> serviceMessage){
         try {
-            pdfServiceBean.createPdf(serviceMessage.Data.Report, serviceMessage.Data.FileName);
+            return pdfServiceBean.createPdf(serviceMessage.Data);
         } catch (IOException ex) {
             Logger.getLogger(TrustFactorServiceBean.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
     }
     

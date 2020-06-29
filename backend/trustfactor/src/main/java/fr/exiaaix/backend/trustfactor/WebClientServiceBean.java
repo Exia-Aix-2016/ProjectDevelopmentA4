@@ -11,6 +11,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @RequestScoped
 public class WebClientServiceBean {
@@ -18,23 +20,30 @@ public class WebClientServiceBean {
 
     public  void sendResult(ServiceMessage<DecryptData> message) throws IOException {
 
-        URL url = new URL("localhost:8080/api/MServiceRest");
+        URL url = new URL("https://enz4bp5sqd6bh.x.pipedream.net");//Will be different
 
         //Convert to Json
         Gson gson =  new Gson();
         String json = gson.toJson(message);
-        System.out.println("------JSON : " + json);
+
+
         //Create Connection
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
         con.setDoOutput(true);
         con.setRequestProperty("Content-Type", "application/json");
+        con.setConnectTimeout(2000);//5sec of timeout
 
         //Send Data
         try(OutputStream os = con.getOutputStream()){
-            os.write(json.getBytes(StandardCharsets.UTF_8));
+            os.write(json.getBytes("UTF-8"));
+            os.flush();
         }
 
+
+        int httpResult = con.getResponseCode();
+
+        Logger.getLogger(WebClientServiceBean.class.getName()).log(Level.INFO, "Sended code Response : " + httpResult);
         con.disconnect();
     }
 
