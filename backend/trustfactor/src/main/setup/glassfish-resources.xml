@@ -4,6 +4,9 @@
   <jdbc-resource enabled="true" jndi-name="jdbc/_oracle" object-type="user" pool-name="PoolOracle">
     <description/>
   </jdbc-resource>
+  <mail-resource debug="true" enabled="true" from="Exia-Aix-Promo-20162017@viacesi.fr" host="Exia-Aix-Promo-20162017@viacesi.fr" jndi-name="mailNotifier" object-type="user" store-protocol="imap" store-protocol-class="com.sun.mail.imap.IMAPStore" transport-protocol="smtp" transport-protocol-class="com.sun.mail.smtp.SMTPTransport" user="admin">
+    <description/>
+  </mail-resource>
   <admin-object-resource enabled="true" jndi-name="jms/messagingQueue" object-type="user" res-adapter="jmsra" res-type="javax.jms.Queue">
     <description/>
     <property name="Name" value="physMessagingQueue"/>
