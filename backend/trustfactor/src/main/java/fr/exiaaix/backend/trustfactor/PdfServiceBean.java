@@ -26,10 +26,10 @@ public class PdfServiceBean {
         contentStream.endText();
         contentStream.close();
 
-        document.close();
-
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         document.save(byteArrayOutputStream);
+        
+        document.close();
 
         return byteArrayOutputStream.toByteArray();
     }

@@ -32,9 +32,7 @@ public class TrustFactorServiceBean implements MessageListener {
     
     @Inject
     private PdfServiceBean pdfServiceBean;
-    
-    private List<Word> listWord = wordManagerServiceBean.getWords(10000);
-    
+        
     public TrustFactorServiceBean(){
         
     }
@@ -42,13 +40,15 @@ public class TrustFactorServiceBean implements MessageListener {
     @Override
     public void onMessage(Message msg) {
         
-        //ServiceMessage<DecryptData> serviceMessage = convertMessage(msg);
+       List<Word> listWord = wordManagerServiceBean.getWords(10000);
+        
+       ServiceMessage<DecryptData> serviceMessage = convertMessage(msg);
 
-        //double percentage = calculatePercentage(serviceMessage.Data.PlainText);
+        double percentage = calculatePercentage(serviceMessage.Data.PlainText, listWord);
         
-        //System.out.println(percentage + "%");
+        System.out.println(percentage + "%");
         
-        //generatePdf(serviceMessage);     
+        generatePdf(serviceMessage);     
                      
     }
     
@@ -67,16 +67,19 @@ public class TrustFactorServiceBean implements MessageListener {
         return serviceMessage;
     }
     
-    private double calculatePercentage(String text){
+    private double calculatePercentage(String text, List<Word> listWord){
         int foundWords = 0;
+                
         String[] plainText = text.split("\\s+");
                        
+      
         for (int i = 0; i < plainText.length; i++) {
             if(listWord.contains(plainText[i]))
                 foundWords++;
         }
 
         return foundWords / plainText.length;
+       
     }
     
     private void generatePdf(ServiceMessage<DecryptData> serviceMessage){
