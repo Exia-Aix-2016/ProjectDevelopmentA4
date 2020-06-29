@@ -13,7 +13,7 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 @Stateless
 public class PdfServiceBean {
 
-    public byte[] createPdf(String message, String name) throws IOException {
+    public byte[] createPdf(byte[] message, String name) throws IOException {
         PDDocument document = new PDDocument();
         PDPage page = new PDPage();
         document.addPage(page);
@@ -22,7 +22,7 @@ public class PdfServiceBean {
 
         contentStream.setFont(PDType1Font.COURIER, 12);
         contentStream.beginText();
-        contentStream.showText(message);
+        contentStream.showText(message.toString());
         contentStream.endText();
         contentStream.close();
 
