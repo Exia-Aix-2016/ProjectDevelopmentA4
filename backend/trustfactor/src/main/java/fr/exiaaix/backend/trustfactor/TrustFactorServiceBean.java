@@ -44,9 +44,9 @@ public class TrustFactorServiceBean implements MessageListener {
         
        ServiceMessage<DecryptData> serviceMessage = convertMessage(msg);
 
-        //double percentage = calculatePercentage(serviceMessage.Data.PlainText, listWord);
+        double percentage = calculatePercentage(serviceMessage.Data.PlainText, listWord);
         
-        //System.out.println(percentage + "%");
+        System.out.println(percentage + "%");
         
         serviceMessage.Data.Report =  generatePdf(serviceMessage);
 
