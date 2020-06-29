@@ -1,5 +1,8 @@
 package fr.exiaaix.backend.trustfactor;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import fr.exiaaix.backend.trustfactor.models.DecryptData;
@@ -23,6 +26,9 @@ public class TrustFactorServiceBean implements MessageListener {
     @Inject
     private WordManagerServiceBean worldManagerServiceBean;
     
+    @Inject
+    private PdfServiceBean pdfServiceBean;
+    
     public TrustFactorServiceBean(){
         
     }
@@ -45,6 +51,13 @@ public class TrustFactorServiceBean implements MessageListener {
 
 
         //System.out.print(worldManagerServiceBean.getWords(10000));
+        try {
+            //System.out.print(worldManagerServiceBean.getWords(10000));
+            pdfServiceBean.createPdf("Hello world", "name.pdf");
+        } catch (IOException ex) {
+            Logger.getLogger(TrustFactorServiceBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+                
     }
     
     
