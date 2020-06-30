@@ -4,7 +4,12 @@
   <jdbc-resource enabled="true" jndi-name="jdbc/_oracle" object-type="user" pool-name="PoolOracle">
     <description/>
   </jdbc-resource>
-  <mail-resource debug="true" enabled="true" from="Exia-Aix-Promo-20162017@viacesi.fr" host="Exia-Aix-Promo-20162017@viacesi.fr" jndi-name="mailNotifier" object-type="user" store-protocol="imap" store-protocol-class="com.sun.mail.imap.IMAPStore" transport-protocol="smtp" transport-protocol-class="com.sun.mail.smtp.SMTPTransport" user="admin">
+  <mail-resource debug="true" enabled="true" from="project166@yahoo.com" host="smtp.mail.yahoo.com" jndi-name="mailNotifier" object-type="user" store-protocol="imap" store-protocol-class="com.sun.mail.imap.IMAPStore" transport-protocol="smtp" transport-protocol-class="com.sun.mail.smtp.SMTPTransport" user="project166@yahoo.com">
+      <property name="mail.smtp.auth" value="true"/>
+      <property name="mail.smtp.port" value="465"/>
+      <property name="mail.smtp.socketFactory.port" value="465"/>
+      <property name="mail.smtp.socketFactory.class" value="javax.net.ssl.SSLSocketFactory"/>
+      <property name="mail.smtp.password" value="P@ssword"/>
     <description/>
   </mail-resource>
   <admin-object-resource enabled="true" jndi-name="jms/messagingQueue" object-type="user" res-adapter="jmsra" res-type="javax.jms.Queue">
