@@ -18,6 +18,7 @@ namespace Middleware.Models
     [System.Runtime.Serialization.DataContractAttribute(Name="Message", Namespace="http://schemas.datacontract.org/2004/07/Middleware.Models")]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(Middleware.Models.Credential))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(Middleware.Models.LoginResult))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(Middleware.Models.DecryptMsg))]
     public partial class Message : object, System.Runtime.Serialization.IExtensibleDataObject
     {
         
@@ -254,6 +255,117 @@ namespace Middleware.Models
             set
             {
                 this.TokenUserField = value;
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="DecryptMsg", Namespace="http://schemas.datacontract.org/2004/07/Middleware.Models")]
+    public partial class DecryptMsg : object, System.Runtime.Serialization.IExtensibleDataObject
+    {
+        
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        private string CipherTextField;
+        
+        private string FileNameField;
+        
+        private string KeyField;
+        
+        private string PlainTextField;
+        
+        private byte[] ReportField;
+        
+        private string SecretField;
+        
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData
+        {
+            get
+            {
+                return this.extensionDataField;
+            }
+            set
+            {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CipherText
+        {
+            get
+            {
+                return this.CipherTextField;
+            }
+            set
+            {
+                this.CipherTextField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string FileName
+        {
+            get
+            {
+                return this.FileNameField;
+            }
+            set
+            {
+                this.FileNameField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Key
+        {
+            get
+            {
+                return this.KeyField;
+            }
+            set
+            {
+                this.KeyField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string PlainText
+        {
+            get
+            {
+                return this.PlainTextField;
+            }
+            set
+            {
+                this.PlainTextField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public byte[] Report
+        {
+            get
+            {
+                return this.ReportField;
+            }
+            set
+            {
+                this.ReportField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Secret
+        {
+            get
+            {
+                return this.SecretField;
+            }
+            set
+            {
+                this.SecretField = value;
             }
         }
     }

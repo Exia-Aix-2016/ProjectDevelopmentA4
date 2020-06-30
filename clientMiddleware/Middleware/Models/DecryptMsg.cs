@@ -20,7 +20,7 @@ namespace Middleware.Models
         public string PlainText { get; set; }
 
         [DataMember]
-        public string Report { get; set; }
+        public byte[] Report { get; set; }
 
         [DataMember]
         public string Key { get; set; }
