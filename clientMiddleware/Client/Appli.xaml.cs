@@ -22,7 +22,6 @@ namespace Client
     /// </summary>
     public partial class Appli : Window
     {
-
         WebService webService = WebService.Instance;
         Processing processing = new Processing();
 

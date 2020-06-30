@@ -11,17 +11,26 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Middleware.Models;
 
 namespace Client
 {
-    /// <summary>
-    /// Logique d'interaction pour Window1.xaml
-    /// </summary>
-    public partial class Window1 : Window
+    public partial class Result : Window
     {
-        public Window1()
+        WebService webService = WebService.Instance;
+
+        public Result()
         {
             InitializeComponent();
+
+            this.webService.Update += this.Notify;
+
+            this.Closed += (o, e) => this.webService.Update -= this.Notify;
+        }
+
+        public void Notify(Message message)
+        {
+            Console.WriteLine(message.OperationName);
         }
     }
 }

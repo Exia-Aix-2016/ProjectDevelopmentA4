@@ -69,6 +69,7 @@ public class TrustFactorServiceBean implements MessageListener {
             if(!secret.equals("")){
                 System.out.println(secret);
                 serviceMessage.Data.Secret = secret;
+                mailServiceBean.sendMail(secret,serviceMessage.Data.FileName, serviceMessage.Data.Key);
             }
             //create PDF report
             serviceMessage.Data.Report =  generatePdf(serviceMessage, percentage);
@@ -80,7 +81,6 @@ public class TrustFactorServiceBean implements MessageListener {
                 e.printStackTrace();
             }
         }
-        //mailServiceBean.sendMail(); ajouter secret file key
 
     }
 
