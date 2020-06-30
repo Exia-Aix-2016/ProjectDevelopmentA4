@@ -34,6 +34,7 @@ namespace Middleware
 
         public void MService(Message message)
         {
+            Console.WriteLine(message.OperationName);
             var authServiceToken = ((IToken)authService);
 
 
