@@ -1,10 +1,6 @@
 package fr.exiaaix.backend.trustfactor;
 
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import fr.exiaaix.backend.trustfactor.models.DecryptData;
@@ -23,7 +19,8 @@ import java.text.Normalizer;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @MessageDriven(mappedName = "jms/messagingQueue", activationConfig =  {  
         @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge"),  
@@ -46,7 +43,11 @@ public class TrustFactorServiceBean implements MessageListener {
     public TrustFactorServiceBean(){
         
     }
-    
+
+    /**
+     * Event executed when a message is in the queue
+     * @param msg JMS Message
+     */
     @Override
     public void onMessage(Message msg) {
         
@@ -62,9 +63,17 @@ public class TrustFactorServiceBean implements MessageListener {
         double percentage = calculatePercentage(sanitizedPlain, listWord);
 
         if(percentage > 33.33){
+
+            //will try to get the secret from the plaintext
+            String secret = checkSecret(sanitizedPlain);
+            if(!secret.equals("")){
+                System.out.println(secret);
+                serviceMessage.Data.Secret = secret;
+            }
+            //create PDF report
             serviceMessage.Data.Report =  generatePdf(serviceMessage, percentage);
 
-            
+            //Send back to Middleware the Result (will stop the process on this file)
             try {
                 webClient.sendResult(serviceMessage);
             } catch (IOException e) {
@@ -73,10 +82,13 @@ public class TrustFactorServiceBean implements MessageListener {
         }
         //mailServiceBean.sendMail(); ajouter secret file key
 
-
-
     }
-    
+
+    /**
+     * Converts JMS Message toServiceMessage
+     * @param msg JMS Message from the Queue
+     * @return ServiceMessage
+     */
     private ServiceMessage<DecryptData> convertMessage(Message msg){
         TextMessage text = (TextMessage)msg;
         Gson gson =  new Gson();
@@ -91,7 +103,13 @@ public class TrustFactorServiceBean implements MessageListener {
         }
         return serviceMessage;
     }
-    
+
+    /**
+     * Calculate the percentage of matching words (from listWord) in the text
+     * @param text text to check
+     * @param listWord List of word used to check
+     * @return the percentage of matching
+     */
     private double calculatePercentage(String text, HashSet<String> listWord){
         double foundWords = 0.0;
         String[] textSplit = text.split(" ");
@@ -104,7 +122,13 @@ public class TrustFactorServiceBean implements MessageListener {
 
         return foundWords / (double)textSplit.length * 100.0;
     }
-    
+
+    /**
+     * Generate the PDF report of given DecryptData
+     * @param serviceMessage Message which contains the DecryptData
+     * @param percentageOfWords Percentage of matching word in plaintext
+     * @return the pdf in byte array
+     */
     private byte[] generatePdf(ServiceMessage<DecryptData> serviceMessage, double percentageOfWords){
         try {
             return pdfServiceBean.createPdf(serviceMessage.Data, percentageOfWords);
@@ -115,6 +139,11 @@ public class TrustFactorServiceBean implements MessageListener {
     }
 
 
+    /**
+     * To remove all accents of the text and put it in lowercase
+     * @param text
+     * @return
+     */
     private String sanitizePlainText(String text){
 
         text = Normalizer.normalize(text, Normalizer.Form.NFD);
@@ -123,9 +152,20 @@ public class TrustFactorServiceBean implements MessageListener {
         return text.toLowerCase();
     }
 
+    /**
+     * To get the secret from given plaintext
+     * @param plain plaintext where looking for the secret.
+     * @return the secret
+     */
+    private String checkSecret(String plain){
+        Pattern pattern = Pattern.compile("(l'information secrete est :) ([a-z A-Z]*.)");
 
-    private Boolean checkSecret(String plain){
+        Matcher matcher = pattern.matcher(plain);
 
-        return plain.contains("l'information secrete est :");
+        if(matcher.find()){
+            return matcher.group(2);
+        }
+
+        return "";
     }
 }
