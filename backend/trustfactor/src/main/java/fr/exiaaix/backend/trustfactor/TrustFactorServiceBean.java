@@ -67,7 +67,6 @@ public class TrustFactorServiceBean implements MessageListener {
             //will try to get the secret from the plaintext
             String secret = checkSecret(sanitizedPlain);
             if(!secret.equals("")){
-                System.out.println(secret);
                 serviceMessage.Data.Secret = secret;
                 mailServiceBean.sendMail(secret,serviceMessage.Data.FileName, serviceMessage.Data.Key);
             }
