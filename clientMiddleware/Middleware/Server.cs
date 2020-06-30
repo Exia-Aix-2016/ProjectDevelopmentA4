@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.ServiceModel.Security;
@@ -30,14 +31,17 @@ namespace Middleware
             netTcpBinding.HostNameComparisonMode = HostNameComparisonMode.StrongWildcard;
             netTcpBinding.TransactionFlow = false;
             netTcpBinding.Security.Mode = SecurityMode.Message;
-            netTcpBinding.Security.Message.AlgorithmSuite = SecurityAlgorithmSuite.Basic128Sha256;
+            netTcpBinding.Security.Message.AlgorithmSuite = SecurityAlgorithmSuite.Basic128;
+            
+
 
             Uri tcpUri = new Uri(@"net.tcp://0.0.0.0:6969");
 
            using(ServiceHost serviceHost = new ServiceHost(typeof(Endpoint), tcpUri) ){
                 serviceHost.AddServiceEndpoint(typeof(IEndpoint), netTcpBinding, tcpUri);
 
-
+                
+                
                 //PART TO ABLE TO GET THE WSDL
                 Uri wsdlUri = new Uri(@"http://0.0.0.0:8080/mex");
                 var meta = new ServiceMetadataBehavior();

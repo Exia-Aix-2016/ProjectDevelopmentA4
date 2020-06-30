@@ -27,6 +27,12 @@ namespace Client
 			clientCallbackHandler = new ClientCallbackHandler();
 			context = new InstanceContext(clientCallbackHandler);
 			client = new EndpointClient(context);
+
+			
+			client.ClientCredentials.Windows.ClientCredential.UserName = Properties.Resources.WINUSER;
+			client.ClientCredentials.Windows.ClientCredential.Password = Properties.Resources.WINPASSWORD; 
+			client.ClientCredentials.Windows.ClientCredential.Domain = Properties.Resources.WINDOMAIN;
+
 		}
 
 		public static WebService Instance

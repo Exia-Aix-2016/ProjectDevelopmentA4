@@ -18,7 +18,7 @@ public class WebClientServiceBean {
 
     public  void sendResult(ServiceMessage<DecryptData> message) throws IOException {
 
-        URL url = new URL("https://enz4bp5sqd6bh.x.pipedream.net");//Will be different
+        URL url = new URL("http://192.168.20.11:8080/api/MServiceRest");//Will be different
 
         //Convert to Json
         Gson gson =  new Gson();
