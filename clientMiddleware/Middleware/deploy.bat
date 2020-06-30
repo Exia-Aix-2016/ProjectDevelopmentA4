@@ -1,0 +1,1 @@
+robocopy .\bin\Release \\192.168.20.11\app
