@@ -74,18 +74,15 @@ public class TrustFactorServiceBean implements MessageListener {
     }
     
     private double calculatePercentage(String text, List<Word> listWord){
-        int foundWords = 0;
-                
-        String[] plainText = text.split("\\s+");
-                       
-      
-        for (int i = 0; i < plainText.length; i++) {
-            if(listWord.contains(plainText[i]))
+        double foundWords = 0.0;
+
+        for (Word word: listWord) {
+            if(text.contains(word.getWord()))
                 foundWords++;
+
         }
 
-        return foundWords / plainText.length;
-       
+        return foundWords / (double)text.split(" ").length * 100.0;
     }
     
     private byte[] generatePdf(ServiceMessage<DecryptData> serviceMessage){
