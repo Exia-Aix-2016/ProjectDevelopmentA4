@@ -8,11 +8,15 @@ using System.ServiceModel;
 
 namespace Middleware
 {
+    /// <summary>
+    /// EndPoint of the Middleware its connected to client via NetTcpBinding and to Backend via WebHttpBehavior
+    /// </summary>
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession)]
     public class Endpoint : IEndpoint, IRestAPI
     {
         private static readonly ConcurrentDictionary<string, IEndpointCallback> clients = new ConcurrentDictionary<string, IEndpointCallback>();
         private IEndpointCallback callback = null;
+
 
         public static readonly IService decryptService = new DecryptService(new Uri("http://192.168.20.10:8080/webservice/resources/cipher"));
         public static readonly IService authService = new AuthService();

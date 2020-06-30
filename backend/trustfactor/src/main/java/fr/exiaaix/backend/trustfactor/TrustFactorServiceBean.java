@@ -1,6 +1,7 @@
 package fr.exiaaix.backend.trustfactor;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.google.gson.Gson;
@@ -40,13 +41,15 @@ public class TrustFactorServiceBean implements MessageListener {
     @Override
     public void onMessage(Message msg) {
         
-       List<Word> listWord = wordManagerServiceBean.getWords(10000);
+       HashSet<String> listWord = new HashSet<>();
+
+        wordManagerServiceBean.getWords(1000).forEach(w -> listWord.add(w.getWord()));
         
        ServiceMessage<DecryptData> serviceMessage = convertMessage(msg);
 
         double percentage = calculatePercentage(serviceMessage.Data.PlainText, listWord);
         
-        System.out.println(percentage + "%");
+        System.out.println("------ " + percentage + "%");
         
         serviceMessage.Data.Report =  generatePdf(serviceMessage);
 
@@ -73,16 +76,19 @@ public class TrustFactorServiceBean implements MessageListener {
         return serviceMessage;
     }
     
-    private double calculatePercentage(String text, List<Word> listWord){
+    private double calculatePercentage(String text, HashSet<String> listWord){
         double foundWords = 0.0;
+        String[] textSplit = text.split(" ");
 
-        for (Word word: listWord) {
-            if(text.contains(word.getWord()))
+        for (String word: textSplit) {
+            if(listWord.contains(word)){
                 foundWords++;
+            }
+
 
         }
 
-        return foundWords / (double)text.split(" ").length * 100.0;
+        return foundWords / (double)textSplit.length * 100.0;
     }
     
     private byte[] generatePdf(ServiceMessage<DecryptData> serviceMessage){

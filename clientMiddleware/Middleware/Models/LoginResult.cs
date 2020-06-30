@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Middleware.Models
 {
+    /// <summary>
+    /// Model which is used as response to send token to the client.
+    /// </summary>
     [DataContract]
      public class LoginResult
     {
