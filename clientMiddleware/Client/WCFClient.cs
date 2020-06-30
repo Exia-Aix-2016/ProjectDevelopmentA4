@@ -19,6 +19,7 @@ namespace Middleware.Models
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(Middleware.Models.Credential))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(Middleware.Models.LoginResult))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(Middleware.Models.DecryptMsg))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(int[]))]
     public partial class Message : object, System.Runtime.Serialization.IExtensibleDataObject
     {
         
@@ -275,7 +276,7 @@ namespace Middleware.Models
         
         private string PlainTextField;
         
-        private byte[] ReportField;
+        private int[] ReportField;
         
         private string SecretField;
         
@@ -344,7 +345,7 @@ namespace Middleware.Models
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public byte[] Report
+        public int[] Report
         {
             get
             {

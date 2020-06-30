@@ -35,6 +35,7 @@ namespace Middleware
             netTcpBinding.MaxBufferSize = 2147483647;
             netTcpBinding.MaxReceivedMessageSize = 2147483647;
             netTcpBinding.ReaderQuotas.MaxStringContentLength = 2147483647;
+            netTcpBinding.ReaderQuotas.MaxArrayLength = 2147483647;
 
 
             Uri tcpUri = new Uri(@"net.tcp://0.0.0.0:6969");
@@ -56,8 +57,19 @@ namespace Middleware
 
                 //PART REST API
                 Uri restApi = new Uri(@"http://0.0.0.0:8080/api");
-                var endpoint = serviceHost.AddServiceEndpoint(typeof(IRestAPI), new WebHttpBinding(), restApi);
+
+                var httpBinding = new WebHttpBinding();
+
+                httpBinding.MaxBufferSize = 2147483647;
+                httpBinding.MaxReceivedMessageSize = 2147483647;
+                httpBinding.ReaderQuotas.MaxStringContentLength = 2147483647;
+                httpBinding.ReaderQuotas.MaxArrayLength = 2147483647;
+                httpBinding.ReaderQuotas.MaxBytesPerRead = 2147483647;
+                httpBinding.ReaderQuotas.MaxDepth = 2147483647;
+
+                var endpoint = serviceHost.AddServiceEndpoint(typeof(IRestAPI), httpBinding, restApi);
                 endpoint.EndpointBehaviors.Add(new WebHttpBehavior());
+   
 
 
                 Console.WriteLine("Middleware is starting...");
