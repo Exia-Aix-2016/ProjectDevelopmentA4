@@ -48,13 +48,12 @@
                             x:Name="textBoxEmail"
                              />
                 </StackPanel>
-                <Border Width="250"
-                       Height="2"
-                       Background="White"
-                       Opacity="0.5"/>
-                <StackPanel Height="32">
-                    <TextBlock Height="23" HorizontalAlignment="Left" x:Name ="errormessage" VerticalAlignment="Top" Width="247" Margin="118,253,0,0"  OpacityMask="Crimson" Foreground="#FFE5572C"/>
-                </StackPanel>
+                    <Border Width="250"
+                        Height="2"
+                        Background="White"
+                        Opacity="0.5"/>
+                
+                
 
 
 
@@ -75,11 +74,15 @@
                             x:Name="passwordBox1"
                             />
                 </StackPanel>
+                
                 <Border Width="250"
                        Height="2"
                        Background="White"
                        Opacity="0.5"/>
-
+                
+                <StackPanel Height="32">
+                    <TextBlock Height="23" HorizontalAlignment="Left" x:Name ="errormessage" VerticalAlignment="Bottom" Width="247" Margin="118,500,0,0"  OpacityMask="Crimson" Foreground="#FFE5572C"/>
+                </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0,50,0,0">
                     <Button Width="100" Height="40" Content="LOGIN" x:Name="loginButton" Margin="400,0,60,0 " Click="Login_Click"/>

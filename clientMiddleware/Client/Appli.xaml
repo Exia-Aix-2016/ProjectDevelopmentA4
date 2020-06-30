@@ -3,19 +3,50 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d"
-        Title="Appli" Height="450" Width="800">
-    <Grid Margin="470,35,18,64">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="129*"/>
-            <ColumnDefinition Width="23*"/>
-        </Grid.ColumnDefinitions>
+        Title="Appli" Height="450" Width="800"
+        AllowsTransparency="True" Background="Transparent"
+        WindowStyle="None" ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid>
+        <Grid>
+            <Border CornerRadius="5" Grid.RowSpan="2">
+                <Border.Background>
+                    <LinearGradientBrush>
+                        <GradientStop Color="AliceBlue" Offset="0.0"/>
+                        <GradientStop Color="CadetBlue" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                
+            </Border>
+        </Grid>
+
+        <TextBlock HorizontalAlignment="Left" Height="63" Margin="29,79,0,0" TextWrapping="Wrap" Text="Veuillez sélectionner les document à déchiffrer " VerticalAlignment="Top" Width="422"
+            FontFamily="Helvetica" FontSize="20"/>
+
+        <Button x:Name="btnOpenFile" Click="btnOpenFiles_Click" Content="Ouvrir" Background="LightBlue" Margin="601,23,142,407">
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="5"/>
+                </Style>
+            </Button.Resources>
+        </Button>
+        
         <WrapPanel HorizontalAlignment="Center" Margin="124,0,77.721,10" RenderTransformOrigin="0.541,0.704">
-            <Button x:Name="btnOpenFile" Click="btnOpenFiles_Click" Content="Open files"/>
+            <Border CornerRadius="20"/>
         </WrapPanel>
-        <ListBox Name="fileUpload" Margin="10,32,22,94" Width="272" Grid.ColumnSpan="2" />
-        <Button Content="Upload" Height="30" Margin="87,249,40.721,0" Click="btnUpload_Click" VerticalAlignment="Top" Width="130"/>
+        
+        <ListBox Name="fileUpload" Margin="488,60,40,66" Width="272" />
 
-
+        <Button Content="Upload" Height="30" Margin="561,400,109,0" Click="btnUpload_Click" Background="LightBlue" VerticalAlignment="Top" Width="130">
+            
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="5"/>
+                </Style>
+            </Button.Resources>
+        </Button>
     </Grid>
 </Window>

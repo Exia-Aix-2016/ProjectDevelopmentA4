@@ -40,13 +40,7 @@ namespace Client
         {
             if (textBoxEmail.Text.Length == 0)
             {
-                errormessage.Text = "Mail vide.";
-                textBoxEmail.Focus();
-            }
-            else if (!Regex.IsMatch(textBoxEmail.Text, @"^[a-zA-Z][\w\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$"))
-            {
-                errormessage.Text = "Mail invalide.";
-                textBoxEmail.Select(0, textBoxEmail.Text.Length);
+                errormessage.Text = "Username vide.";
                 textBoxEmail.Focus();
             }
             else
