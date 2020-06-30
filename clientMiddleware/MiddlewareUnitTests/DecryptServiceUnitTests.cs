@@ -4,7 +4,7 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Middleware.Decrypt;
 using Middleware.Models;
-using Middleware.Services;
+using Middleware.Services.Uncryption;
 
 namespace MiddlewareUnitTests
 {
@@ -15,7 +15,7 @@ namespace MiddlewareUnitTests
         [TestInitialize]
         public void Init()
         {
-            decryptService = new DecryptService(new Uri("https://enuw1kd3dqhr.x.pipedream.net"));
+            decryptService = new DecryptService(new Uri("http://192.168.20.10:8282/webservice/resources/cipher"));
         }
         [TestMethod]
         public void TestDecryption()

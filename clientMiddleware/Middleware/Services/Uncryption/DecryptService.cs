@@ -1,16 +1,13 @@
 ﻿using Middleware.Decrypt;
 using Middleware.Models;
-using Newtonsoft.Json;
+using Middleware.Services.Authentification;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
-namespace Middleware.Services
+namespace Middleware.Services.Uncryption
 {
     /// <summary>
     /// Decrypt Service
@@ -63,7 +60,7 @@ namespace Middleware.Services
                     //Break it !
                     foreach(var kv in xorBreaker.breakXor(decryptMsg.DecryptMsg.CipherText, 4, byUserToken, 0.06))
                     {
-                        sendResult(decryptMsg.DecryptMsg.FileName, kv);
+                        sendResult(decryptMsg.DecryptMsg.FileName, decryptMsg.UserToken, kv);
                     }
   
                     
@@ -87,7 +84,7 @@ namespace Middleware.Services
         /// Send result To Backend
         /// </summary>
         /// <param name="keyPlain"></param>
-        private void sendResult(string filename, KeyValuePair<string, string> keyPlain)
+        private void sendResult(string filename, string userToken, KeyValuePair<string, string> keyPlain)
         {
             //TODO: Send Result to Backend (JEE) via Http.
 
@@ -95,13 +92,22 @@ namespace Middleware.Services
             DecryptMsg decryDecryptMsg = new DecryptMsg
             {
                 FileName = filename,
-                CipherText = keyPlain.Value,
+                CipherText = "",
+                PlainText = keyPlain.Value,
                 Key = keyPlain.Key
             };
 
-            request.sendJson(decryDecryptMsg);
-            
+           
 
+            Message message = new Message
+            {
+                OperationName = "CHECK",
+                Data = decryDecryptMsg,
+                TokenUser = userToken,
+                TokenApp = AuthService.APP_TOKEN
+            };
+
+            request.sendJson(message);    
         }
 
 

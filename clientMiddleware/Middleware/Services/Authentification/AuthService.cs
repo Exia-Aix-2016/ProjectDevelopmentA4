@@ -14,16 +14,15 @@ using JWT.Exceptions;
 using JWT.Serializers;
 using Middleware.Services;
 using System.ServiceModel;
-using Middleware.Services.AuthService;
 using Middleware.Models;
 using System.Security.Authentication;
 
-namespace Middleware
+namespace Middleware.Services.Authentification
 {
     public class AuthService : IService, IToken
     {
         private readonly string secret = "rjehke456zer21ZAdazdas5";
-        private const string APP_TOKEN = "e2lOmEf7z2YcWNOsMgwxrytjcOftPwpi";
+        public static readonly string APP_TOKEN = "e2lOmEf7z2YcWNOsMgwxrytjcOftPwpi";
 
         public LoginResult UserLogin(string login, string pass)
         {

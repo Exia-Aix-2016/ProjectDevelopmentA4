@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Middleware.Models
 {
+    /// <summary>
+    /// Helper used by DecryptService to link file with an user
+    /// </summary>
     public class DecryptMsgNamed
     {
         public string UserToken { get; set; }

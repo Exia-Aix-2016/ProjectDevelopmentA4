@@ -1,7 +1,8 @@
 ﻿
 using Middleware.Models;
 using Middleware.Services;
-using Middleware.Services.AuthService;
+using Middleware.Services.Authentification;
+using Middleware.Services.Uncryption;
 using System;
 using System.Collections.Concurrent;
 using System.ServiceModel;
@@ -44,6 +45,7 @@ namespace Middleware
             if (message.TokenUser == null && authServiceToken.IsValidAppToken(message.TokenApp) && message.OperationName == "AUTHENTIFICATION")
             {
                 Message returnMessage = authService.ServiceAction(message);
+                Console.WriteLine(returnMessage.OperationName);
                 callback.MServiceCallback(returnMessage);
 
             }

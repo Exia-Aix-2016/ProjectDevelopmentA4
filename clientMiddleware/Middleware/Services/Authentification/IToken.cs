@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Middleware.Services.AuthService
+namespace Middleware.Services.Authentification
 {
     public interface IToken
     {

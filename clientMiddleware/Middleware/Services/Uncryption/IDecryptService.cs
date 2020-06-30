@@ -1,6 +1,6 @@
 ﻿using Middleware.Models;
 
-namespace Middleware.Services
+namespace Middleware.Services.Uncryption
 {
     public interface IDecryptService : IService
     {

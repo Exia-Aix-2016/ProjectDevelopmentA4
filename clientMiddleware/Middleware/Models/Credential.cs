@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Middleware.Models
 {
+    /// <summary>
+    /// Model which is used for carring credentials information from client to Middleware
+    /// </summary>
     [DataContract]
     public class Credential
     {
