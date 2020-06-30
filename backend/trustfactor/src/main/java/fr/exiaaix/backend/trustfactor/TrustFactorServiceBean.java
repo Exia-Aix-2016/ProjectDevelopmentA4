@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import fr.exiaaix.backend.trustfactor.models.DecryptData;
 import fr.exiaaix.backend.trustfactor.models.ServiceMessage;
+
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
 import javax.inject.Inject;
@@ -18,7 +19,10 @@ import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.List;
+import java.text.Normalizer;
+import java.util.HashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 @MessageDriven(mappedName = "jms/messagingQueue", activationConfig =  {  
@@ -48,22 +52,28 @@ public class TrustFactorServiceBean implements MessageListener {
         
        HashSet<String> listWord = new HashSet<>();
 
-        wordManagerServiceBean.getWords(1000).forEach(w -> listWord.add(w.getWord()));
+        wordManagerServiceBean.getWords(0).forEach(w -> listWord.add(w.getWord()));
         
        ServiceMessage<DecryptData> serviceMessage = convertMessage(msg);
 
-        double percentage = calculatePercentage(serviceMessage.Data.PlainText, listWord);
-        
-        System.out.println("------ " + percentage + "%");
-        
-        serviceMessage.Data.Report =  generatePdf(serviceMessage);
-        
-        try {
-            webClient.sendResult(serviceMessage);
-        } catch (IOException e) {
-            e.printStackTrace();
+       //Do not put it in serviceMessage.Data.PlainText
+       String sanitizedPlain = sanitizePlainText(serviceMessage.Data.PlainText);
+
+        double percentage = calculatePercentage(sanitizedPlain, listWord);
+
+        if(percentage > 33.33){
+            serviceMessage.Data.Report =  generatePdf(serviceMessage, percentage);
+
+            
+            try {
+                webClient.sendResult(serviceMessage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         //mailServiceBean.sendMail(); ajouter secret file key
+
+
 
     }
     
@@ -90,20 +100,32 @@ public class TrustFactorServiceBean implements MessageListener {
             if(listWord.contains(word)){
                 foundWords++;
             }
-
-
         }
 
         return foundWords / (double)textSplit.length * 100.0;
     }
     
-    private byte[] generatePdf(ServiceMessage<DecryptData> serviceMessage){
+    private byte[] generatePdf(ServiceMessage<DecryptData> serviceMessage, double percentageOfWords){
         try {
-            return pdfServiceBean.createPdf(serviceMessage.Data);
+            return pdfServiceBean.createPdf(serviceMessage.Data, percentageOfWords);
         } catch (IOException ex) {
             Logger.getLogger(TrustFactorServiceBean.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
-    
+
+
+    private String sanitizePlainText(String text){
+
+        text = Normalizer.normalize(text, Normalizer.Form.NFD);
+        text = text.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+
+        return text.toLowerCase();
+    }
+
+
+    private Boolean checkSecret(String plain){
+
+        return plain.contains("l'information secrete est :");
+    }
 }

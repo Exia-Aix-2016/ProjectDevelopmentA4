@@ -5,12 +5,10 @@ import fr.exiaaix.backend.trustfactor.models.DecryptData;
 import fr.exiaaix.backend.trustfactor.models.ServiceMessage;
 
 import javax.enterprise.context.RequestScoped;
-import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

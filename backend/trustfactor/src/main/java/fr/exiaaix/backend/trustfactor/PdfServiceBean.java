@@ -1,25 +1,21 @@
 package fr.exiaaix.backend.trustfactor;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.ejb.Stateless;
-import javax.swing.text.Document;
-
 import fr.exiaaix.backend.trustfactor.models.DecryptData;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
+import javax.ejb.Stateless;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 @Stateless
 public class PdfServiceBean {
 
-    public byte[] createPdf(DecryptData decryptData) throws IOException {
+    public byte[] createPdf(DecryptData decryptData, double percentageOfWords) throws IOException {
 
         try(PDDocument doc =  new PDDocument()){
             PDPage page = new PDPage();
@@ -37,6 +33,11 @@ public class PdfServiceBean {
                 //KEY
                 contentStream.newLine();
                 contentStream.showText("key : " + decryptData.Key);
+                contentStream.newLine();
+
+                //PERCENTAGE
+                contentStream.newLine();
+                contentStream.showText("Percentage of french words : " + percentageOfWords);
                 contentStream.newLine();
 
                 //PLAINTEXT
