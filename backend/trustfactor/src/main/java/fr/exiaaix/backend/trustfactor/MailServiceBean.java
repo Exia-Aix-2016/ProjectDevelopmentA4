@@ -17,7 +17,7 @@ public class MailServiceBean {
     @Resource(name = "mailNotifier")
     private Session mailSession;
 
-    public void sendMail()/*add parametre secret key file*/ {
+    public void sendMail(String secret, String FileName, String Key) {
 
       Message simpleMail = new MimeMessage(mailSession);
 
@@ -28,7 +28,7 @@ public class MailServiceBean {
         MimeMultipart mailContent = new MimeMultipart();
 
         MimeBodyPart mailMessage = new MimeBodyPart();
-        mailMessage.setContent("<p>L'info secret est :Elvis is the King.<br /> Dans le fichier: file_074.txt.<br />Avec la Clé: .", "text/html; charset=utf-8");
+        mailMessage.setContent("<p>L'info secret est : "+secret+"<br /> Dans le fichier: "+FileName+"<br />Avec la Clé: "+Key+ ".", "text/html; charset=utf-8");
         mailContent.addBodyPart(mailMessage);
 
         simpleMail.setContent(mailContent);
