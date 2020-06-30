@@ -19,7 +19,7 @@ public class WebClientServiceBean {
     public  void sendResult(ServiceMessage<DecryptData> message) throws IOException {
 
         URL url = new URL("http://192.168.20.11:8080/api/MServiceRest");//Will be different
-
+        message.OperationName = "SOLUTION";
         //Convert to Json
         Gson gson =  new Gson();
         String json = gson.toJson(message);
