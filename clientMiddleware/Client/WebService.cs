@@ -1,6 +1,7 @@
 ﻿using Middleware.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.ServiceModel;
@@ -12,7 +13,7 @@ namespace Client
 {
 	public sealed class WebService
 	{
-        private static readonly Lazy<WebService> _instance = new Lazy<WebService>(() => new WebService());
+		private static readonly Lazy<WebService> _instance = new Lazy<WebService>(() => new WebService());
 		public delegate void NotifCtrl(Message message);
 		public event NotifCtrl Update;
 		private ClientCallbackHandler clientCallbackHandler;
@@ -39,20 +40,19 @@ namespace Client
 		{
 			get => _instance.Value;
 		}
-		
+
 		void Notify(Message message)
-        {
+		{
 			if (message.OperationName == "TOKEN")
-            {
-				LoginResult result = (LoginResult) message.Data;
+			{
+				LoginResult result = (LoginResult)message.Data;
 				userToken = result.TokenUser;
-            }
+			}
 			Update?.Invoke(message);
-			
 		}
 
 		public void Login(string username, string password)
-        {
+		{
 			Message message = new Message
 			{
 				Data = new Credential
@@ -62,10 +62,24 @@ namespace Client
 				},
 				OperationName = "AUTHENTIFICATION",
 				TokenApp = APP_TOKEN
-
 			};
+			client.MService(message);
+		}
 
-			client.MServiceAsync(message);
-        }
+		public void Upload(string fileName, string txt)
+		{
+			Message message = new Message
+			{
+				Data = new DecryptMsg
+				{
+					FileName = fileName,
+					CipherText = txt
+				},
+				OperationName = "DECRYPT",
+				TokenApp = APP_TOKEN,
+				TokenUser = userToken
+			};
+			client.MService(message);
+		}
 	}
 }

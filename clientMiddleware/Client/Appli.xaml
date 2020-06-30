@@ -36,6 +36,7 @@
         
         <WrapPanel HorizontalAlignment="Center" Margin="124,0,77.721,10" RenderTransformOrigin="0.541,0.704">
             <Border CornerRadius="20"/>
+            
         </WrapPanel>
         
         <ListBox Name="fileUpload" Margin="488,60,40,66" Width="272" />

@@ -1,19 +1,8 @@
 ﻿using System;
-using System.ServiceModel;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Data;
-using System.Data.SqlClient;
-using System.Text.RegularExpressions;
 using Middleware.Models;
 using Microsoft.Win32;
+using System.IO;
 
 namespace Client
 {
@@ -24,6 +13,7 @@ namespace Client
     {
         WebService webService = WebService.Instance;
         Processing processing = new Processing();
+        OpenFileDialog openFileDialog = new OpenFileDialog();
 
         public Appli()
         {
@@ -41,9 +31,8 @@ namespace Client
 
         private void btnOpenFiles_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Multiselect = true;
 
+            openFileDialog.Multiselect = true;
             if (openFileDialog.ShowDialog() == true)
             {
                 foreach (string filename in openFileDialog.FileNames)
@@ -53,6 +42,11 @@ namespace Client
 
         private void btnUpload_Click(object sender, RoutedEventArgs e)
         {
+            foreach (string filename in openFileDialog.FileNames)
+            {
+                string text = File.ReadAllText(filename);
+                webService.Upload(System.IO.Path.GetFileName(filename), text);
+            }
             processing.Show();
             Close();
         }
