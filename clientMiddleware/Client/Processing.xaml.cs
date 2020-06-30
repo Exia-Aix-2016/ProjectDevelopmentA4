@@ -18,6 +18,7 @@ namespace Client
     public partial class Processing : Window
     {
         WebService webService = WebService.Instance;
+        Result result = new Result();
 
         public Processing()
         {
@@ -31,6 +32,12 @@ namespace Client
         public void Notify(Message message)
         {
             Console.WriteLine(message.OperationName);
+        }
+
+        public void FinishedProcessing()
+        {
+            result.Show();
+            Close();
         }
 
     }

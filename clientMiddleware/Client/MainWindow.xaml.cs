@@ -33,6 +33,11 @@ namespace Client
         public void Notify(Message message)
         {
             Console.WriteLine(message.OperationName);
+            if(message.OperationName=="TOKEN")
+            {
+                appli.Show();
+                Close();
+            }
         }
 
 
@@ -43,22 +48,18 @@ namespace Client
                 errormessage.Text = "Username vide.";
                 textBoxEmail.Focus();
             }
+            else if(passwordBox1.Password.Length ==0)
+            {
+                errormessage.Text = "Mot de Passe vide.";
+                passwordBox1.Focus();
+            }
             else
             {
+                Console.WriteLine("clic");
                 string email = textBoxEmail.Text;
                 string password = passwordBox1.Password;
 
-                if (passwordBox1.Password.Length == 0)
-                {
-                    errormessage.Text = "Mot de Passe vide.";
-                    passwordBox1.Focus();
-                }
-                else
-                {
-                    webService.Login(email, password);
-                    appli.Show();
-                    Close();
-                }
+                webService.Login(email, password);
             }
         }
 

@@ -12,7 +12,7 @@ namespace Client
 {
 	public sealed class WebService
 	{
-		private static readonly WebService _instance = new WebService();
+        private static readonly Lazy<WebService> _instance = new Lazy<WebService>(() => new WebService());
 		public delegate void NotifCtrl(Message message);
 		public event NotifCtrl Update;
 		private ClientCallbackHandler clientCallbackHandler;
@@ -20,8 +20,6 @@ namespace Client
 		private EndpointClient client;
 		private string userToken;
 		private const string APP_TOKEN = "e2lOmEf7z2YcWNOsMgwxrytjcOftPwpi";
-
-
 
 		private WebService()
 		{
@@ -33,7 +31,7 @@ namespace Client
 
 		public static WebService Instance
 		{
-			get => _instance;
+			get => _instance.Value;
 		}
 		
 		void Notify(Message message)
