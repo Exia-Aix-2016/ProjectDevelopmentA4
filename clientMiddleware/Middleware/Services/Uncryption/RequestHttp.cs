@@ -34,13 +34,12 @@ namespace Middleware.Services.Uncryption
             dataStream.Close();
 
             WebResponse response = request.GetResponse();
-            Console.WriteLine(((HttpWebResponse)response).StatusDescription);
-
+ 
             using (dataStream = response.GetResponseStream())
             {
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
-                Console.WriteLine(responseFromServer);
+
             }
             response.Close();
         }

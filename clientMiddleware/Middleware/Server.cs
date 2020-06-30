@@ -32,7 +32,9 @@ namespace Middleware
             netTcpBinding.TransactionFlow = false;
             netTcpBinding.Security.Mode = SecurityMode.Message;
             netTcpBinding.Security.Message.AlgorithmSuite = SecurityAlgorithmSuite.Basic128;
-            
+            netTcpBinding.MaxBufferSize = 2147483647;
+            netTcpBinding.MaxReceivedMessageSize = 2147483647;
+            netTcpBinding.ReaderQuotas.MaxStringContentLength = 2147483647;
 
 
             Uri tcpUri = new Uri(@"net.tcp://0.0.0.0:6969");

@@ -31,7 +31,7 @@ namespace Middleware.Services.Uncryption
 
           
 
-            for (int i = 0; i < Environment.ProcessorCount - 1; i++)// -1 to let a thread for our lovely Endpoint
+            for (int i = 0; i < Environment.ProcessorCount - 2; i++)// -1 to let a thread for our lovely Endpoint
             {
                 ThreadPool.QueueUserWorkItem(Decrypt, globalCancellationSource.Token);
 

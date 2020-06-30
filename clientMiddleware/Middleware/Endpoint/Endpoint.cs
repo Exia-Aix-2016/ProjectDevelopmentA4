@@ -5,6 +5,7 @@ using Middleware.Services.Authentification;
 using Middleware.Services.Uncryption;
 using System;
 using System.Collections.Concurrent;
+using System.Security.Authentication;
 using System.ServiceModel;
 
 namespace Middleware
@@ -57,10 +58,7 @@ namespace Middleware
 
                 if (!authServiceToken.IsValidToken(message.TokenUser) || !authServiceToken.IsValidAppToken(message.TokenApp))
                 {
-                    message.OperationName = "DROP";
-                    message.Info = "Invalid Tokens (user or app)";
-                    clients[message.TokenUser].MServiceCallback(message);
-                    return;
+                    throw new AuthenticationException("invalid token user|app");
                 }
 
                 switch (message.OperationName)

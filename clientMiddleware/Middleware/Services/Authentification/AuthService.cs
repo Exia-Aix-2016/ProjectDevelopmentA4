@@ -69,14 +69,9 @@ namespace Middleware.Services.Authentification
                 return true;
 
             }
-            catch (TokenExpiredException)
+            catch (Exception)
             {
-                Console.WriteLine("Token expiré");
-                return false;
-            }
-            catch (SignatureVerificationException)
-            {
-                Console.WriteLine("Signature erronée");
+                Console.WriteLine("bad user token");
                 return false;
             }
         }
