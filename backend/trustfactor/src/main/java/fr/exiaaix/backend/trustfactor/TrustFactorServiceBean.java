@@ -15,6 +15,7 @@ import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.sql.SQLOutput;
 import java.text.Normalizer;
 import java.util.HashSet;
 import java.util.logging.Level;
@@ -24,7 +25,8 @@ import java.util.regex.Pattern;
 
 @MessageDriven(mappedName = "jms/messagingQueue", activationConfig =  {  
         @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge"),  
-        @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue")  
+        @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue") ,
+        @ActivationConfigProperty(propertyName = "maxSession", propertyValue = "50")
     })  
 public class TrustFactorServiceBean implements MessageListener {
     
@@ -50,20 +52,15 @@ public class TrustFactorServiceBean implements MessageListener {
      */
     @Override
     public void onMessage(Message msg) {
-        
-       HashSet<String> listWord = new HashSet<>();
 
-        wordManagerServiceBean.getWords(0).forEach(w -> listWord.add(w.getWord()));
-        
-       ServiceMessage<DecryptData> serviceMessage = convertMessage(msg);
-
+        ServiceMessage<DecryptData> serviceMessage = convertMessage(msg);
        //Do not put it in serviceMessage.Data.PlainText
-       String sanitizedPlain = sanitizePlainText(serviceMessage.Data.PlainText);
+        String sanitizedPlain = sanitizePlainText(serviceMessage.Data.PlainText);
 
-        double percentage = calculatePercentage(sanitizedPlain, listWord);
-
-        if(percentage > 33.33){
-
+       //Calculate the percentage of FrenchWords of the given Plaintext
+        double percentage = calculatePercentage(sanitizedPlain, wordManagerServiceBean.getWords());
+        System.out.println(" -------- " + serviceMessage.Data.Key + " : " + percentage);
+        if(percentage > 20){
             //will try to get the secret from the plaintext
             String secret = checkSecret(sanitizedPlain);
             if(!secret.equals("")){

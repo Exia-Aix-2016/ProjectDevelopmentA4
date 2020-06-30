@@ -11,6 +11,16 @@ namespace Middleware.Decrypt
     public class XorBreaker
     {
 
+        public List<string> Keys { get; } = new List<string>();
+
+        public XorBreaker()
+        {
+            foreach(var key in CryptoTools.GetPermutationsWithRept("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 4))
+            {
+                Keys.Add(string.Concat(key.ToArray()));
+            }  
+        }
+
         /// <summary>
         /// Will break a cipher code by using transposition and Coincidence index
         /// IC : ~0.06 = english ; ~0.07 = French
@@ -21,13 +31,8 @@ namespace Middleware.Decrypt
         /// <returns>Tuple (string, string) of key and plaintext</returns>
         public IEnumerable<KeyValuePair<string, string>> breakXor(string cipher, int sizeChunk, CancellationToken token,  double ic = 0.07)
         {
-            IEnumerable<KeyValuePair<string, string>> keyPlains = new List<KeyValuePair<string, string>>();
-
 
             if (cipher == string.Empty || cipher == null) yield break;
-
-            //Used to bypass the break by index of coincidence.
-            bool bypass = false;
 
             //will contains the potential key used to encrypt the message
             string keys = "";
@@ -66,10 +71,8 @@ namespace Middleware.Decrypt
             keys = string.Join("", keys.GroupBy(c => c).Select(c => char.ToString(c.Key)).ToArray());
 
             if (keys.Length == 0)
-            {
-                bypass = true;
-                keys = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            }
+                yield break;
+            
 
 
             //For each permutation of keys
@@ -82,15 +85,9 @@ namespace Middleware.Decrypt
                 //Merge char eachothers
                 string key = string.Join("", elem.ToArray());
                 string plain = CryptoTools.Xor(cipher, key);
-                double index = 0.0;
+                double index = plain.Ic();
 
-                if (!bypass)
-                {
-                    index = plain.Ic();
-                }
-
-
-                if (index >= ic || bypass)
+                if (index >= ic)
                 {
                     yield return new KeyValuePair<string, string>(key, plain);
                 }

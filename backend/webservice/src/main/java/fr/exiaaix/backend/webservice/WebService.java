@@ -1,11 +1,7 @@
 package fr.exiaaix.backend.webservice;
 import javax.annotation.Resource;
 import javax.inject.Inject;
-import javax.jms.JMSConnectionFactory;
-import javax.jms.JMSContext;
-import javax.jms.JMSException;
-import javax.jms.Queue;
-import javax.jms.TextMessage;
+import javax.jms.*;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -27,8 +23,8 @@ public class WebService {
     public Response checkCipher(String x) throws JMSException{
 
         TextMessage textMessage = context.createTextMessage(x);
-
-        context.createProducer().send(messagingQueue, textMessage);
+        //Disable
+        context.createProducer().setDeliveryMode(DeliveryMode.NON_PERSISTENT).send(messagingQueue, textMessage);
 
         return Response.status(Response.Status.OK).build();
     }

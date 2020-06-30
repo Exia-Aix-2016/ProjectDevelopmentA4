@@ -41,14 +41,14 @@ public class PdfServiceBean {
                 contentStream.newLine();
 
                 //PLAINTEXT
-                contentStream.showText("PlainText : ");
+                /*contentStream.showText("PlainText : ");
                 
                 String[] lines  = decryptData.PlainText.split("\\r?\\n");
                 contentStream.newLine();
                 for (String line : lines) {
                     contentStream.showText(line);
                     contentStream.newLine();
-                }
+                }*/
                 contentStream.endText();
             }
 

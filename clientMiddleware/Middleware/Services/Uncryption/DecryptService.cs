@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Middleware.Services.Uncryption
 {
@@ -14,6 +15,98 @@ namespace Middleware.Services.Uncryption
     /// </summary>
     public class DecryptService : IDecryptService
     {
+        private XorBreaker xorBreaker = new XorBreaker();
+
+        private CancellationTokenSource globalCancellationSource { get; set; }
+
+        public Message ServiceAction(Message message)
+        {
+            var decryptMessage = (DecryptMsg)message.Data;
+
+            Console.WriteLine("COUNT KEYS : " + xorBreaker.Keys.Count);
+
+
+            Parallel.ForEach(xorBreaker.Keys, (key) =>
+            {
+                var request = new RequestHttp();
+
+                var plain = CryptoTools.Xor(decryptMessage.CipherText, key);
+
+                var decryptMsg = new DecryptMsg
+                {
+                    FileName = decryptMessage.FileName,
+                    Key = key,
+                    PlainText = plain
+                };
+
+                var msg = new Message
+                {
+                    OperationName = message.OperationName,
+                    TokenApp = message.TokenApp,
+                    TokenUser = message.TokenUser,
+                    Data = decryptMsg,
+                    Info = message.Info,
+                    AppVersion = message.AppVersion,
+                    StatusOp = message.StatusOp,
+                    OperationVersion = message.OperationVersion
+                };
+
+                request.sendJson(msg);
+
+            });
+
+            return null;
+           
+        }
+
+        public void StopOperation(Message message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StopService()
+        {
+            globalCancellationSource.Cancel();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /*
         private ConcurrentQueue<DecryptMsgNamed> filesQueue { get; set; }
         private CancellationTokenSource globalCancellationSource { get; set; }
         private ConcurrentDictionary<string, CancellationTokenSource> userCancellationSource { get; set; }
@@ -160,5 +253,10 @@ namespace Middleware.Services.Uncryption
 
             Console.WriteLine("DecryptService is Closed");
         }
+        
+         */
+
+
+
     }
 }

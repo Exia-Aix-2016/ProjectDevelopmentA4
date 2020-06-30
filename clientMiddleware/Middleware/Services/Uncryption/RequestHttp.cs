@@ -11,21 +11,20 @@ namespace Middleware.Services.Uncryption
 {
     public class RequestHttp
     {
-        private Uri url;
-        public RequestHttp(Uri url)
+        public RequestHttp()
         {
             //http://192.168.20.10:8282/webservice/resources/cipher
 
-            this.url = url;
         }
         public void sendJson(Message message)
         {
  
-            WebRequest request = WebRequest.Create(url);
+            WebRequest request = WebRequest.Create("http://192.168.20.10:8282/webservice/resources/cipher");
             request.Method = "POST";
             request.ContentType = "application/json";
 
             string json = JsonConvert.SerializeObject(message, Formatting.Indented);
+  
             byte[] byteArray = Encoding.UTF8.GetBytes(json);
             request.ContentLength = byteArray.Length;
 
@@ -34,13 +33,6 @@ namespace Middleware.Services.Uncryption
             dataStream.Close();
 
             WebResponse response = request.GetResponse();
- 
-            using (dataStream = response.GetResponseStream())
-            {
-                StreamReader reader = new StreamReader(dataStream);
-                string responseFromServer = reader.ReadToEnd();
-
-            }
             response.Close();
         }
     }

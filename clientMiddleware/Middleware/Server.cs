@@ -38,6 +38,7 @@ namespace Middleware
             netTcpBinding.ReaderQuotas.MaxArrayLength = 2147483647;
 
 
+
             Uri tcpUri = new Uri(@"net.tcp://0.0.0.0:6969");
 
            using(ServiceHost serviceHost = new ServiceHost(typeof(Endpoint), tcpUri) ){
@@ -75,7 +76,7 @@ namespace Middleware
                 Console.WriteLine("Middleware is starting...");
                 serviceHost.Open();
 
-                serviceHost.Closed += (o, a) => Endpoint.decryptService.StopService();
+                //serviceHost.Closed += (o, a) => Endpoint.decryptService.StopService();
 
                 Console.ReadKey();
             }

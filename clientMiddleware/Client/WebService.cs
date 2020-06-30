@@ -1,4 +1,4 @@
-﻿using Middleware.Models;
+using Middleware.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -63,7 +63,7 @@ namespace Client
 				OperationName = "AUTHENTIFICATION",
 				TokenApp = APP_TOKEN
 			};
-			client.MService(message);
+			client.MServiceAsync(message);
 		}
 
 		public void Upload(string fileName, string txt)
@@ -79,7 +79,7 @@ namespace Client
 				TokenApp = APP_TOKEN,
 				TokenUser = userToken
 			};
-			client.MService(message);
+			client.MServiceAsync(message);
 		}
 	}
 }
