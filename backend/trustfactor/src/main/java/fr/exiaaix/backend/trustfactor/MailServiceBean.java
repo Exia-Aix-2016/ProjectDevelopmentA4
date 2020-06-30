@@ -22,8 +22,9 @@ public class MailServiceBean {
       Message simpleMail = new MimeMessage(mailSession);
 
       try {
+          
         simpleMail.setSubject("Info Secrete");
-        simpleMail.setRecipient(Message.RecipientType.TO, new InternetAddress("lucvdv83@hotmail.fr"));
+        simpleMail.setRecipient(Message.RecipientType.TO, new InternetAddress("Exia-Aix-Promo-20162017@viacesi.fr"));
 
         MimeMultipart mailContent = new MimeMultipart();
 
@@ -35,7 +36,7 @@ public class MailServiceBean {
 
         Transport.send(simpleMail);
 
-        System.out.println("Message successfully send to: " + "lucvdv83@hotmail.fr");
+        System.out.println("Message successfully send to: " + "Exia-Aix-Promo-20162017@viacesi.fr");
       } catch (MessagingException e) {
         e.printStackTrace();
       }
