@@ -57,8 +57,20 @@ namespace MiddlewareUnitTests
             });
 
 
+            decryptService.ServiceAction(new Message
+            {
+                Data = new DecryptMsg
+                {
+                    CipherText = File.ReadAllText("file_040.txt"),
+                    FileName = "file_040.txt"
+                },
+                OperationName = "DECRYPT",
+                TokenUser = "TEST"
+            });
 
-            Thread.Sleep(5000);
+
+
+            Thread.Sleep(10000);
 
 
             decryptService.StopService();
