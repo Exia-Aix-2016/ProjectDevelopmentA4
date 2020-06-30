@@ -1,5 +1,6 @@
 package fr.exiaaix.backend.trustfactor;
 
+
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.logging.Level;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 
+
 @MessageDriven(mappedName = "jms/messagingQueue", activationConfig =  {  
         @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge"),  
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue")  
@@ -33,6 +35,9 @@ public class TrustFactorServiceBean implements MessageListener {
     
     @Inject
     private PdfServiceBean pdfServiceBean;
+    
+    @Inject
+    private MailServiceBean mailServiceBean;
         
     public TrustFactorServiceBean(){
         
@@ -52,12 +57,13 @@ public class TrustFactorServiceBean implements MessageListener {
         System.out.println("------ " + percentage + "%");
         
         serviceMessage.Data.Report =  generatePdf(serviceMessage);
-
+        
         try {
             webClient.sendResult(serviceMessage);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //mailServiceBean.sendMail(); ajouter secret file key
 
     }
     
