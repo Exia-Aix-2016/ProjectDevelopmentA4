@@ -18,7 +18,7 @@ namespace Middleware
         private IEndpointCallback callback = null;
 
 
-        public static readonly IService decryptService = new DecryptService(new Uri("http://192.168.20.10:8080/webservice/resources/cipher"));
+        public static readonly IService decryptService = new DecryptService(new Uri("http://192.168.20.10:8282/webservice/resources/cipher"));
         public static readonly IService authService = new AuthService();
 
         public Endpoint()
