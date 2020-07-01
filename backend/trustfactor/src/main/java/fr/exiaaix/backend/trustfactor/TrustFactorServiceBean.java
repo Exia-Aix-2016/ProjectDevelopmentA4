@@ -40,6 +40,9 @@ public class TrustFactorServiceBean implements MessageListener {
     
     @Inject
     private MailServiceBean mailServiceBean;
+
+    @Inject
+    private CacheServiceBean cacheServiceBean;
       
     /**
      * Event executed when a message is in the queue
@@ -49,14 +52,33 @@ public class TrustFactorServiceBean implements MessageListener {
     public void onMessage(Message msg) {
 
         ServiceMessage<DecryptData> serviceMessage = convertMessage(msg);
-       //Do not put it in serviceMessage.Data.PlainText
-        String sanitizedPlain = sanitizePlainText(serviceMessage.Data.PlainText);
 
-       //Calculate the percentage of FrenchWords of the given Plaintext
+        switch (serviceMessage.OperationName){
+            case "CACHE":
+                System.out.println("CACHING " + serviceMessage.Data.FileName);
+                cache(serviceMessage);
+                break;
+            case "DECRYPT":
+                decrypt(serviceMessage);
+                break;
+        }
+    }
+
+    private void cache(ServiceMessage<DecryptData> serviceMessage){
+
+        cacheServiceBean.addFile(serviceMessage.Data.FileName, serviceMessage.Data.CipherText);
+    }
+    private void decrypt(ServiceMessage<DecryptData> serviceMessage){
+
+        String cipher = cacheServiceBean.getFile(serviceMessage.Data.FileName);
+        String plain = xor(cipher, serviceMessage.Data.Key);
+        String sanitizedPlain = sanitizePlainText(plain);
+
+        //Calculate the percentage of FrenchWords of the given Plaintext
         double percentage = calculatePercentage(sanitizedPlain, wordManagerServiceBean.getWords());
-        System.out.println(" -------- " + serviceMessage.Data.Key + " : " + percentage);
+        System.out.println(" ---> " + serviceMessage.Data.Key + " : " + percentage);
         if(percentage > 20){
-            System.out.println(" -------- " + serviceMessage.Data.Key + " : " + percentage);
+            System.out.println("!! FOUND !! ---> " + serviceMessage.Data.Key + " : " + percentage);
             //will try to get the secret from the plaintext
             String secret = checkSecret(sanitizedPlain);
             if(!secret.equals("")){
@@ -73,7 +95,24 @@ public class TrustFactorServiceBean implements MessageListener {
                 e.printStackTrace();
             }
         }
+    }
 
+
+    /**
+     *
+     * @param text
+     * @param key
+     * @return
+     */
+    public String xor(String text, String key){
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < text.length(); i++)
+        {
+            char cipherChar = (char)(text.charAt(i) ^ key.charAt(i % key.length()));
+            stringBuilder.append(cipherChar);
+        }
+
+        return stringBuilder.toString();
     }
 
     /**

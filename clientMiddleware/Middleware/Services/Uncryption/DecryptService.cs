@@ -16,28 +16,25 @@ namespace Middleware.Services.Uncryption
     /// </summary>
     public class DecryptService : IDecryptService
     {
-        private XorBreaker xorBreaker = new XorBreaker();
-
         private CancellationTokenSource globalCancellationSource { get; set; } = new CancellationTokenSource();
         private ConcurrentDictionary<string, CancellationTokenSource> userCancellationTokens { get; set; } = new ConcurrentDictionary<string, CancellationTokenSource>();
-
+        private XorBreaker xorBreaker = new XorBreaker();
 
         /// <summary>
         /// used to break a text by index of coincidence, Smart attack but not work with  plaintext that sucks!
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        private bool byIndex(Message message, CancellationToken token)
+        private void Decrypt(Message message, CancellationToken token)
         {
+            var request = new RequestHttp();
+            
             var decryptMessage = (DecryptMsg)message.Data;
 
-            var results = xorBreaker.breakXor(decryptMessage.CipherText, 4, token, 0.06);
-
-            if (results.Count() == 0) return false;
-
-            Parallel.ForEach(results, new ParallelOptions { CancellationToken = token }, (kv) =>
+            int i = 0;
+            foreach (var kv in xorBreaker.breakXor(decryptMessage.CipherText, 4, token, 0.06))
             {
-                var request = new RequestHttp();
+                if (i > 1) break;
                 var decryptMsg = new DecryptMsg
                 {
                     FileName = decryptMessage.FileName,
@@ -45,9 +42,10 @@ namespace Middleware.Services.Uncryption
                     PlainText = kv.Value
                 };
 
+                Console.WriteLine(decryptMsg.FileName + " : " + decryptMsg.Key + " - " + decryptMsg.PlainText.Length);
                 var msg = new Message
                 {
-                    OperationName = message.OperationName,
+                    OperationName = "DECRYPT",
                     TokenApp = message.TokenApp,
                     TokenUser = message.TokenUser,
                     Data = decryptMsg,
@@ -56,19 +54,36 @@ namespace Middleware.Services.Uncryption
                     StatusOp = message.StatusOp,
                     OperationVersion = message.OperationVersion
                 };
-
+                i++;
                 request.sendJson(msg);
-            });
-            Console.WriteLine("FOUNDED BY IC");
-            return true;
+            }
         }
 
+        /// <summary>
+        /// Will send Files into Backend cache
+        /// </summary>
+        /// <param name="message">message</param>
+        private void cacheFile(Message message)
+        {
+            var request = new RequestHttp();
+            message.OperationName = "CACHE";
+            request.sendJson(message);
+        }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public Message ServiceAction(Message message)
         {
+            
+            //Cache before decrypt
+            cacheFile(message);
 
             //Token preparation
             var decryptMessage = (DecryptMsg)message.Data;
+
             var userCancellationToken = CancellationTokenSource.CreateLinkedTokenSource(globalCancellationSource.Token);
             var tokenId = message.TokenUser + decryptMessage.FileName;
 
@@ -77,36 +92,27 @@ namespace Middleware.Services.Uncryption
             {
                 Console.WriteLine("Error userTokenCancellation for : " + tokenId);
             }
-            
 
-            //We first attack by index of coincidence
-            if (byIndex(message, userCancellationToken.Token)) return null;
-
-            Console.WriteLine("COUNT KEYS : " + xorBreaker.Keys.Count);
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            //If the first attack didn't work, well... go bruteforce...
-            try
+            Task.Run(() => Decrypt(message, userCancellationToken.Token), userCancellationToken.Token);
+ 
+            #region bruteforce
+            /*try
             {
                 Parallel.ForEach(xorBreaker.Keys, new ParallelOptions { CancellationToken = userCancellationToken.Token }, (key) =>
                 {
                     var request = new RequestHttp();
-                    var plain = CryptoTools.Xor(decryptMessage.CipherText, key);
-
-                    //We filter all the key below a low Index (to take a maximum keys but not too much)
-                    if (plain.Ic2() < 0.05)
-                        return;
 
                     var decryptMsg = new DecryptMsg
                     {
                         FileName = decryptMessage.FileName,
                         Key = key,
-                        PlainText = plain
+                        CipherText = null,
+                        PlainText = null
                     };
 
                     var msg = new Message
                     {
-                        OperationName = message.OperationName,
+                        OperationName = "DECRYPT",
                         TokenApp = message.TokenApp,
                         TokenUser = message.TokenUser,
                         Data = decryptMsg,
@@ -123,10 +129,10 @@ namespace Middleware.Services.Uncryption
             {
                 Console.WriteLine("Cancelled by Backend");
 
-            }
+            }*/
 
-            sw.Stop();
-            Console.WriteLine("Time taken : " + sw.ElapsedMilliseconds + " ms");
+            #endregion
+
             return null;
         }
         
@@ -151,195 +157,5 @@ namespace Middleware.Services.Uncryption
         {
             globalCancellationSource.Cancel();
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        /*
-        private ConcurrentQueue<DecryptMsgNamed> filesQueue { get; set; }
-        private CancellationTokenSource globalCancellationSource { get; set; }
-        private ConcurrentDictionary<string, CancellationTokenSource> userCancellationSource { get; set; }
-
-        private RequestHttp request { get; set; }
-
-
-
-        public DecryptService(Uri uri)
-        {
-            request = new RequestHttp(uri);
-            filesQueue = new ConcurrentQueue<DecryptMsgNamed>();
-            globalCancellationSource = new CancellationTokenSource();
-            userCancellationSource = new ConcurrentDictionary<string, CancellationTokenSource>();
-
-          
-
-            for (int i = 0; i < Environment.ProcessorCount - 2; i++)// -1 to let a thread for our lovely Endpoint
-            {
-                ThreadPool.QueueUserWorkItem(Decrypt, globalCancellationSource.Token);
-
-            }
-        }
-
-        /// <summary>
-        /// Worker
-        /// </summary>
-        /// <param name="obj"></param>
-        private void Decrypt(object obj)
-        {
-            var token = (CancellationToken)obj;//Get the main cancellation token
-            XorBreaker xorBreaker = new XorBreaker();
-            
-            while (!token.IsCancellationRequested)
-            {
-                DecryptMsgNamed decryptMsg;
-                
-                if(filesQueue.TryDequeue(out decryptMsg))
-                {
-                    var TokenCancellatioName = decryptMsg.UserToken + decryptMsg.DecryptMsg.FileName;
-                    //Check by users if a cancellation has been requested.
-                    var byUserToken = userCancellationSource[TokenCancellatioName].Token;
-                    
-                    //Break it !
-                    foreach(var kv in xorBreaker.breakXor(decryptMsg.DecryptMsg.CipherText, 4, byUserToken, 0.06))
-                    {
-                        sendResult(decryptMsg.DecryptMsg.FileName, decryptMsg.UserToken, kv);
-                    }
-  
-                    
-                    if (byUserToken.IsCancellationRequested)
-                    {
-                        CancellationTokenSource cts;
-                        if(!userCancellationSource.TryRemove(TokenCancellatioName, out cts))
-                        {
-                            throw new RemoveUserCancellationSourceException();
-                        }
-                    }
-                }
-
-                Thread.Sleep(10);//To not overload the CPU.
-            }
-               
-            Console.WriteLine("DecryptService Thread : " + Thread.CurrentThread.ManagedThreadId + " stopped");
-        }
-
-        /// <summary>
-        /// Send result To Backend
-        /// </summary>
-        /// <param name="keyPlain"></param>
-        private void sendResult(string filename, string userToken, KeyValuePair<string, string> keyPlain)
-        {
-            //TODO: Send Result to Backend (JEE) via Http.
-
-            //KeyPlain : [CLEF : Texte en clair]
-            DecryptMsg decryDecryptMsg = new DecryptMsg
-            {
-                FileName = filename,
-                CipherText = "",
-                PlainText = keyPlain.Value,
-                Key = keyPlain.Key
-            };
-
-           
-
-            Message message = new Message
-            {
-                OperationName = "CHECK",
-                Data = decryDecryptMsg,
-                TokenUser = userToken,
-                TokenApp = AuthService.APP_TOKEN
-            };
-
-            request.sendJson(message);    
-        }
-
-
-        /// <summary>
-        /// Will add Job into queue.
-        /// </summary>
-        /// <param name="message"></param>
-        public Message ServiceAction(Message message)
-        {
-            var uct = CancellationTokenSource.CreateLinkedTokenSource(globalCancellationSource.Token);
-            if (message != null && message.TokenUser != string.Empty)
-            {
-                var decryptMessage = (DecryptMsg)message.Data;
-                if(userCancellationSource.TryAdd(message.TokenUser+decryptMessage.FileName, uct))
-                {
-                    filesQueue.Enqueue(new DecryptMsgNamed { UserToken = message.TokenUser, DecryptMsg = decryptMessage });
-                }  
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Stop Process Just on userFile
-        /// </summary>
-        /// <param name="message"></param>
-        public void StopOperation(Message message)
-        {
-            if(message != null && message.TokenUser != string.Empty)
-            {
-
-                var cipher = (DecryptMsg)message.Data;
-                if(userCancellationSource.ContainsKey(message.TokenUser + cipher.FileName))
-                {
-                    userCancellationSource[message.TokenUser + cipher.FileName].Cancel();
-                }
-                
-            }
-
-                
-        }
-
-        /// <summary>
-        /// Stop all the service.
-        /// </summary>
-        public void StopService()
-        {
-            Console.WriteLine("Count Token Cancellation : " + userCancellationSource.Count());
-            globalCancellationSource.Cancel();
-
-            Console.WriteLine("DecryptService is Closed");
-        }
-        
-         */
-
-
-
     }
 }

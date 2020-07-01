@@ -30,9 +30,9 @@ namespace Client
 			client = new EndpointClient(context);
 
 			
-			client.ClientCredentials.Windows.ClientCredential.UserName = Properties.Resources.WINUSER;
+			/*client.ClientCredentials.Windows.ClientCredential.UserName = Properties.Resources.WINUSER;
 			client.ClientCredentials.Windows.ClientCredential.Password = Properties.Resources.WINPASSWORD; 
-			client.ClientCredentials.Windows.ClientCredential.Domain = Properties.Resources.WINDOMAIN;
+			client.ClientCredentials.Windows.ClientCredential.Domain = Properties.Resources.WINDOMAIN;*/
 
 		}
 

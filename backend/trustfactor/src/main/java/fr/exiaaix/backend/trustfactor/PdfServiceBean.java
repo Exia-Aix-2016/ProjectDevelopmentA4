@@ -40,15 +40,6 @@ public class PdfServiceBean {
                 contentStream.showText("Percentage of french words : " + percentageOfWords);
                 contentStream.newLine();
 
-                //PLAINTEXT
-                /*contentStream.showText("PlainText : ");
-                
-                String[] lines  = decryptData.PlainText.split("\\r?\\n");
-                contentStream.newLine();
-                for (String line : lines) {
-                    contentStream.showText(line);
-                    contentStream.newLine();
-                }*/
                 contentStream.endText();
             }
 

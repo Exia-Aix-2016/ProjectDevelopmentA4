@@ -31,7 +31,7 @@ namespace Middleware.Decrypt
         /// <returns>Tuple (string, string) of key and plaintext</returns>
         public IEnumerable<KeyValuePair<string, string>> breakXor(string cipher, int sizeChunk, CancellationToken token, double ic = 0.07)
         {
-            if (cipher == string.Empty || cipher == null || sizeChunk <= 0) yield break;
+            if (cipher == string.Empty || cipher == null || sizeChunk <= 0 || cipher.Length > 4000) yield break;
 
             var blocks = CryptoTools.DivideText(cipher, sizeChunk).ToList();
             var trans = CryptoTools.Transposed(blocks);

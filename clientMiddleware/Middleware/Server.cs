@@ -76,7 +76,7 @@ namespace Middleware
                 Console.WriteLine("Middleware is starting...");
                 serviceHost.Open();
 
-                //serviceHost.Closed += (o, a) => Endpoint.decryptService.StopService();
+                serviceHost.Closed += (o, a) => Endpoint.decryptService.StopService();
 
                 Console.ReadKey();
             }

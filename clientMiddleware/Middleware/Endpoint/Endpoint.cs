@@ -13,7 +13,7 @@ namespace Middleware
     /// <summary>
     /// EndPoint of the Middleware its connected to client via NetTcpBinding and to Backend via WebHttpBehavior
     /// </summary>
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class Endpoint : IEndpoint, IRestAPI
     {
         private static readonly ConcurrentDictionary<string, IEndpointCallback> clients = new ConcurrentDictionary<string, IEndpointCallback>();
@@ -35,7 +35,7 @@ namespace Middleware
 
         public void MService(Message message)
         {
-            Console.WriteLine(message.OperationName);
+           // Console.WriteLine(message.OperationName);
             var authServiceToken = ((IToken)authService);
 
 
