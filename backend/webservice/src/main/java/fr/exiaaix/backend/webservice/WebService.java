@@ -20,12 +20,12 @@ public class WebService {
     private Queue messagingQueue;
 
     @POST()
-    public Response checkCipher(String x) throws JMSException{
-
-        TextMessage textMessage = context.createTextMessage(x);
-        //Disable
-        context.createProducer().setDeliveryMode(DeliveryMode.NON_PERSISTENT).send(messagingQueue, textMessage);
-
+    public Response checkCipher(String body) throws JMSException{
+        
+        TextMessage msg = context.createTextMessage(body);
+        
+        context.createProducer().setDeliveryMode(DeliveryMode.NON_PERSISTENT).send(messagingQueue, msg);
+        
         return Response.status(Response.Status.OK).build();
     }
 
