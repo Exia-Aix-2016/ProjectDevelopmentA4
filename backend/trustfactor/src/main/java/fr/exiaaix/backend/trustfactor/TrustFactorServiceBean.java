@@ -15,7 +15,6 @@ import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.sql.SQLOutput;
 import java.text.Normalizer;
 import java.util.HashSet;
 import java.util.logging.Level;
@@ -41,7 +40,7 @@ public class TrustFactorServiceBean implements MessageListener {
     
     @Inject
     private MailServiceBean mailServiceBean;
-
+      
     /**
      * Event executed when a message is in the queue
      * @param msg JMS Message
@@ -55,7 +54,7 @@ public class TrustFactorServiceBean implements MessageListener {
 
        //Calculate the percentage of FrenchWords of the given Plaintext
         double percentage = calculatePercentage(sanitizedPlain, wordManagerServiceBean.getWords());
-
+        System.out.println(" -------- " + serviceMessage.Data.Key + " : " + percentage);
         if(percentage > 20){
             System.out.println(" -------- " + serviceMessage.Data.Key + " : " + percentage);
             //will try to get the secret from the plaintext
