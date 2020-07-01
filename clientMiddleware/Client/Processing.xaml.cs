@@ -32,6 +32,10 @@ namespace Client
         public void Notify(Message message)
         {
             Console.WriteLine(message.OperationName);
+            if (message.OperationName=="SOLUTION")
+            {
+                FinishedProcessing();
+            }
         }
 
         public void FinishedProcessing()

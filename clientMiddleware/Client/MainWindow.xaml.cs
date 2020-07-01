@@ -41,8 +41,19 @@ namespace Client
                 appli.Show();
                 Close();
             }
+            else if(message.OperationName == "DROPMESSAGE")
+            {
+                Console.WriteLine("mais non");
+                errormessage.Text = "Mauvais identifiants";
+            }
         }
 
+        public void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            tb.Text = string.Empty;
+            tb.GotFocus -= TextBox_GotFocus;
+        }
 
         private void Login_Click(object sender, RoutedEventArgs e)
         {

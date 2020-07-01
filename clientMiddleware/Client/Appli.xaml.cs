@@ -38,7 +38,7 @@ namespace Client
                 foreach (string filename in openFileDialog.FileNames)
                     fileUpload.Items.Add(System.IO.Path.GetFileName(filename));
             }
-        }
+        }   
 
         private void btnUpload_Click(object sender, RoutedEventArgs e)
         {
