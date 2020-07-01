@@ -45,6 +45,7 @@ namespace Middleware.Services.Authentification
                 .WithAlgorithm(new HMACSHA256Algorithm())
                 .WithSecret(secret)
                 .AddClaim("validation", "yes")
+                .AddClaim("user", login)
                 .Encode();
 
             LoginResult result = new LoginResult();

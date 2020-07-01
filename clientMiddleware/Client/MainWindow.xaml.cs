@@ -25,7 +25,7 @@ namespace Client
         {
             InitializeComponent();
 
-            textBoxEmail.Text = "quentin@viacesi.fr";
+            /*textBoxEmail.Text = "quentin@viacesi.fr";*/
             passwordBox1.Password = "root";
             
             this.webService.Update += this.Notify;
