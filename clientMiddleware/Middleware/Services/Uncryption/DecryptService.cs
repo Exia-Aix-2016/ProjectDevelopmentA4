@@ -4,6 +4,7 @@ using Middleware.Services.Authentification;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace Middleware.Services.Uncryption
         private XorBreaker xorBreaker = new XorBreaker();
 
         private CancellationTokenSource globalCancellationSource { get; set; } = new CancellationTokenSource();
+        private ConcurrentDictionary<string, CancellationTokenSource> userCancellationTokens { get; set; } = new ConcurrentDictionary<string, CancellationTokenSource>();
 
 
         /// <summary>
@@ -25,15 +27,15 @@ namespace Middleware.Services.Uncryption
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        private bool byIndex(Message message)
+        private bool byIndex(Message message, CancellationToken token)
         {
             var decryptMessage = (DecryptMsg)message.Data;
 
-            var results = xorBreaker.breakXor(decryptMessage.CipherText, 4, globalCancellationSource.Token, 0.06);
+            var results = xorBreaker.breakXor(decryptMessage.CipherText, 4, token, 0.06);
 
             if (results.Count() == 0) return false;
 
-            Parallel.ForEach(results, new ParallelOptions { CancellationToken = globalCancellationSource.Token }, (kv) =>
+            Parallel.ForEach(results, new ParallelOptions { CancellationToken = token }, (kv) =>
             {
                 var request = new RequestHttp();
                 var decryptMsg = new DecryptMsg
@@ -57,60 +59,92 @@ namespace Middleware.Services.Uncryption
 
                 request.sendJson(msg);
             });
+            Console.WriteLine("FOUNDED BY IC");
             return true;
         }
 
 
         public Message ServiceAction(Message message)
         {
+
+            //Token preparation
             var decryptMessage = (DecryptMsg)message.Data;
+            var userCancellationToken = CancellationTokenSource.CreateLinkedTokenSource(globalCancellationSource.Token);
+            var tokenId = message.TokenUser + decryptMessage.FileName;
 
-            Console.WriteLine("COUNT KEYS : " + xorBreaker.Keys.Count);
-
+            //Add user token to Dictionary (to stop it after)
+            if(userCancellationTokens.AddOrUpdate(tokenId, userCancellationToken, (k, v) => userCancellationToken) == null)
+            {
+                Console.WriteLine("Error userTokenCancellation for : " + tokenId);
+            }
+            
 
             //We first attack by index of coincidence
-            if (byIndex(message)) return null;
+            if (byIndex(message, userCancellationToken.Token)) return null;
 
-
+            Console.WriteLine("COUNT KEYS : " + xorBreaker.Keys.Count);
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             //If the first attack didn't work, well... go bruteforce...
-            Parallel.ForEach(xorBreaker.Keys, new  ParallelOptions{ CancellationToken = globalCancellationSource.Token }, (key) =>
+            try
             {
-                var request = new RequestHttp();
-                var plain = CryptoTools.Xor(decryptMessage.CipherText, key);
-                
-                //We filter all the key below a low Index (to take a maximum keys but not too much)
-                if (plain.Ic2() < 0.05)
-                    return;
-                
-                var decryptMsg = new DecryptMsg
+                Parallel.ForEach(xorBreaker.Keys, new ParallelOptions { CancellationToken = userCancellationToken.Token }, (key) =>
                 {
-                    FileName = decryptMessage.FileName,
-                    Key = key,
-                    PlainText = plain
-                };
+                    var request = new RequestHttp();
+                    var plain = CryptoTools.Xor(decryptMessage.CipherText, key);
 
-                var msg = new Message
-                {
-                    OperationName = message.OperationName,
-                    TokenApp = message.TokenApp,
-                    TokenUser = message.TokenUser,
-                    Data = decryptMsg,
-                    Info = message.Info,
-                    AppVersion = message.AppVersion,
-                    StatusOp = message.StatusOp,
-                    OperationVersion = message.OperationVersion
-                };
+                    //We filter all the key below a low Index (to take a maximum keys but not too much)
+                    if (plain.Ic2() < 0.05)
+                        return;
 
-                request.sendJson(msg);
+                    var decryptMsg = new DecryptMsg
+                    {
+                        FileName = decryptMessage.FileName,
+                        Key = key,
+                        PlainText = plain
+                    };
 
-            });
+                    var msg = new Message
+                    {
+                        OperationName = message.OperationName,
+                        TokenApp = message.TokenApp,
+                        TokenUser = message.TokenUser,
+                        Data = decryptMsg,
+                        Info = message.Info,
+                        AppVersion = message.AppVersion,
+                        StatusOp = message.StatusOp,
+                        OperationVersion = message.OperationVersion
+                    };
+                    request.sendJson(msg);
+
+                });
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("Cancelled by Backend");
+
+            }
+
+            sw.Stop();
+            Console.WriteLine("Time taken : " + sw.ElapsedMilliseconds + " ms");
             return null;
         }
         
         public void StopOperation(Message message)
         {
-            Console.WriteLine("CANCEL");
-            globalCancellationSource.Cancel();
+            
+            var decryptMessage = (DecryptMsg)message.Data;
+            var tokenId = message.TokenUser + decryptMessage.FileName;
+
+            if (userCancellationTokens.ContainsKey(tokenId))
+            {
+                userCancellationTokens[tokenId].Cancel();
+                Console.WriteLine("STOPPED OPERATION FOR : " + tokenId);
+            }
+            else
+            {
+                Console.WriteLine("userCancellationTokens does not exist : " + tokenId);
+            }
         }
 
         public void StopService()

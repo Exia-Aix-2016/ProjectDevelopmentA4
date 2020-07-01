@@ -41,10 +41,6 @@ public class TrustFactorServiceBean implements MessageListener {
     
     @Inject
     private MailServiceBean mailServiceBean;
-        
-    public TrustFactorServiceBean(){
-        
-    }
 
     /**
      * Event executed when a message is in the queue
@@ -111,12 +107,11 @@ public class TrustFactorServiceBean implements MessageListener {
         double foundWords = 0.0;
         String[] textSplit = text.split(" ");
 
-        for (String word: textSplit) {
-            if(listWord.contains(word)){
+        for (int i = 0; i < textSplit.length; i++) {
+            if(listWord.contains(textSplit[i])){
                 foundWords++;
             }
         }
-
         return foundWords / (double)textSplit.length * 100.0;
     }
 
