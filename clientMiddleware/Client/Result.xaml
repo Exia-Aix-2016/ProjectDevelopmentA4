@@ -36,18 +36,21 @@
                     Foreground="DarkSlateBlue"
                     TextAlignment="Left" HorizontalAlignment="Right" Width="597"><Run Text="Document avec information secrète"/><Run Text="&#x9;"/></TextBlock>
             
-            <TextBox Name="FileName" HorizontalAlignment="Center" Height="75" Margin="112,170,549,0" VerticalAlignment="Top" Width="139"/>
-            <TextBox Name="KeyName" HorizontalAlignment="Center" Height="75" Margin="305,170,356,0" VerticalAlignment="Top" Width="139"/>
-            <TextBox Name="SecretName" HorizontalAlignment="Center" Height="75" Margin="519,170,142,0" VerticalAlignment="Top" Width="139"/>
+            
+            
+            <TextBox Name="FileNameOn" HorizontalAlignment="Center" Height="75" Margin="110,170,549,0" VerticalAlignment="Top" Width="139"/>
+            <TextBox Name="KeyNameOn" HorizontalAlignment="Center" Height="75" Margin="326,170,335,0" VerticalAlignment="Top" Width="139"/>
+            <TextBox Name="SecretNameOn" HorizontalAlignment="Center" Height="75" Margin="537,170,124,0" VerticalAlignment="Top" Width="139"/>
 
-            <TextBlock TextWrapping="Wrap" Text="Documents sans information secrète" Margin="111,270,111,111"
+            <TextBlock TextWrapping="Wrap" Text="Documents sans information secrète" Margin="95,270,111,111"
                     FontFamily="Helvetica" 
                     FontSize="20"
                     Foreground="DarkSlateBlue"
                     TextAlignment="Left"/>
 
-            <TextBox Name="WithoutSecret" HorizontalAlignment="Center" Height="75" Margin="130,310,130,0" VerticalAlignment="Top" Width="577"/>
-
+            <TextBox Name="FileNameOff" HorizontalAlignment="Center" Height="75" Margin="110,310,549,0" VerticalAlignment="Top" Width="139"/>
+            <TextBox Name="KeyNameOff" HorizontalAlignment="Center" Height="75" Margin="326,310,335,0" VerticalAlignment="Top" Width="139"/>
+            
         </Grid>
     </Grid>
 </Window>

@@ -32,9 +32,17 @@ namespace Client
         {
             var decrypt = (DecryptMsg)message.Data;
 
-            FileName.Text = decrypt.FileName;
-            KeyName.Text = decrypt.Key;
-            SecretName.Text = decrypt.Secret;
+            if (decrypt.Secret != null)
+            {
+                FileNameOn.Text = decrypt.FileName;
+                KeyNameOn.Text = decrypt.Key;
+                SecretNameOn.Text = decrypt.Secret;
+            }
+            else
+            {
+                FileNameOff.Text = decrypt.FileName;
+                KeyNameOff.Text = decrypt.Key;
+            }
 
         }
     }
