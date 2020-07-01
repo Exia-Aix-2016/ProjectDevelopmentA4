@@ -59,8 +59,9 @@ public class TrustFactorServiceBean implements MessageListener {
 
        //Calculate the percentage of FrenchWords of the given Plaintext
         double percentage = calculatePercentage(sanitizedPlain, wordManagerServiceBean.getWords());
-        System.out.println(" -------- " + serviceMessage.Data.Key + " : " + percentage);
+
         if(percentage > 20){
+            System.out.println(" -------- " + serviceMessage.Data.Key + " : " + percentage);
             //will try to get the secret from the plaintext
             String secret = checkSecret(sanitizedPlain);
             if(!secret.equals("")){

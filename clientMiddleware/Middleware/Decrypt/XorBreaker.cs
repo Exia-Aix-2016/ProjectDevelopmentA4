@@ -29,50 +29,37 @@ namespace Middleware.Decrypt
         /// <param name="sizeChunk">size of you key</param>
         /// <param name="ic">threshold</param>
         /// <returns>Tuple (string, string) of key and plaintext</returns>
-        public IEnumerable<KeyValuePair<string, string>> breakXor(string cipher, int sizeChunk, CancellationToken token,  double ic = 0.07)
+        public IEnumerable<KeyValuePair<string, string>> breakXor(string cipher, int sizeChunk, CancellationToken token, double ic = 0.07)
         {
-
-            if (cipher == string.Empty || cipher == null) yield break;
-
-            //will contains the potential key used to encrypt the message
-            string keys = "";
-
+            if (cipher == string.Empty || cipher == null || sizeChunk <= 0) yield break;
 
             var blocks = CryptoTools.DivideText(cipher, sizeChunk).ToList();
             var trans = CryptoTools.Transposed(blocks);
 
+            //will contains the potential key used to encrypt the message
+            string keys = "";
+
             foreach (var block in trans)
             {
-                Dictionary<string, int> blockKeys = new Dictionary<string, int>();
+                List<char> blockKeys = new List<char>();
                 foreach (char ch in "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
                 {
-
                     string text = CryptoTools.Xor(block, char.ToString(ch));
 
-                    if (text.IsPrintable() && text.Ic() >= ic - 0.01)//If the block is printable and its index is more than ic-0.01 we add the key into blockKeys
+                    if (!blockKeys.Contains(ch) && text.IsPrintable() && text.Ic() > ic - 0.01)//If the block is printable and its index is more than ic-0.01 we add the key into blockKeys
                     {
-                        var c = char.ToString(ch);
-                        if (blockKeys.ContainsKey(c))
-                        {
-                            blockKeys[c] += 1;
-
-                        }
-                        else
-                        {
-                            blockKeys.Add(c, 1);
-                        }
-
+                        blockKeys.Add(ch);
                     }
                 }
                 //We order the letter to make the permutation process easier.
-                keys += string.Join("", blockKeys.OrderBy(c => c.Value).Select(a => a.Key).ToArray());
-
+                keys += string.Concat(blockKeys.OrderBy(c => c).Select(a => a).ToArray());
             }
-            keys = string.Join("", keys.GroupBy(c => c).Select(c => char.ToString(c.Key)).ToArray());
+            keys = string.Concat(keys.GroupBy(c => c).Select(c => char.ToString(c.Key)).ToArray());
+
+            //Console.WriteLine("Keys : {0} -  {1}", keys, keys.Length);
 
             if (keys.Length == 0)
                 yield break;
-            
 
 
             //For each permutation of keys
@@ -83,13 +70,15 @@ namespace Middleware.Decrypt
                     yield break;
                 }
                 //Merge char eachothers
-                string key = string.Join("", elem.ToArray());
-                string plain = CryptoTools.Xor(cipher, key);
-                double index = plain.Ic();
+                string key = string.Concat(elem.ToArray());
 
-                if (index >= ic)
+                string plain = CryptoTools.Xor(cipher, key);
+                var index = plain.Ic();
+
+                if (plain.IsPrintable() && index >= ic)
                 {
                     yield return new KeyValuePair<string, string>(key, plain);
+
                 }
             }
         }

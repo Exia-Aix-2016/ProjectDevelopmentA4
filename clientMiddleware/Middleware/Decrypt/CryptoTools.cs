@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Middleware.Decrypt
@@ -39,6 +40,7 @@ namespace Middleware.Decrypt
         }
         /// <summary>
         /// Will calculates the Index of coincidence of the given text
+        /// use for BreakXor
         /// (Extension)
         /// </summary>
         /// <param name="text">Text to calculate its index</param>
@@ -63,6 +65,42 @@ namespace Middleware.Decrypt
             return ic;
         }
 
+        /// <summary>
+        /// Used for bruteforce
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static double Ic2(this string text)
+        {
+            string msg = text.ToLower();
+
+            msg = Regex.Replace(msg, "/[^a-z]/g", "");
+
+            List<int> frequencies = new List<int>();
+            string alpha = "abcdefghijklmnopqrstuvwxyz";
+            double coincidence = 0.00, density = 0.00;
+            int i = 0;
+
+            for(i = 0; i < alpha.Length; i++)
+            {
+                frequencies.Add(msg.Count(c => c == alpha[i]));
+            }
+
+            for(i = 0; i < frequencies.Count(); i++)
+            {
+                coincidence += frequencies[i] * (frequencies[i] - 1);
+
+            }
+            density = frequencies.Sum();
+
+            if (density < 2) density = 2;
+
+
+            return coincidence / (density * (density - 1));
+
+
+
+        }
 
         /// <summary>
         /// Will determine if a string contains printable char or not

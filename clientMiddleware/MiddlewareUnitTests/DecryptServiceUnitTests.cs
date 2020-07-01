@@ -15,7 +15,7 @@ namespace MiddlewareUnitTests
         [TestInitialize]
         public void Init()
         {
-            decryptService = new DecryptService(new Uri("http://192.168.20.10:8282/webservice/resources/cipher"));
+            decryptService = new DecryptService();
         }
         [TestMethod]
         public void TestDecryption()

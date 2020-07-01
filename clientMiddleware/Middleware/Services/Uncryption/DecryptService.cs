@@ -17,7 +17,49 @@ namespace Middleware.Services.Uncryption
     {
         private XorBreaker xorBreaker = new XorBreaker();
 
-        private CancellationTokenSource globalCancellationSource { get; set; }
+        private CancellationTokenSource globalCancellationSource { get; set; } = new CancellationTokenSource();
+
+
+        /// <summary>
+        /// used to break a text by index of coincidence, Smart attack but not work with  plaintext that sucks!
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        private bool byIndex(Message message)
+        {
+            var decryptMessage = (DecryptMsg)message.Data;
+
+            var results = xorBreaker.breakXor(decryptMessage.CipherText, 4, globalCancellationSource.Token, 0.06);
+
+            if (results.Count() == 0) return false;
+
+            Parallel.ForEach(results, new ParallelOptions { CancellationToken = globalCancellationSource.Token }, (kv) =>
+            {
+                var request = new RequestHttp();
+                var decryptMsg = new DecryptMsg
+                {
+                    FileName = decryptMessage.FileName,
+                    Key = kv.Key,
+                    PlainText = kv.Value
+                };
+
+                var msg = new Message
+                {
+                    OperationName = message.OperationName,
+                    TokenApp = message.TokenApp,
+                    TokenUser = message.TokenUser,
+                    Data = decryptMsg,
+                    Info = message.Info,
+                    AppVersion = message.AppVersion,
+                    StatusOp = message.StatusOp,
+                    OperationVersion = message.OperationVersion
+                };
+
+                request.sendJson(msg);
+            });
+            return true;
+        }
+
 
         public Message ServiceAction(Message message)
         {
@@ -26,12 +68,20 @@ namespace Middleware.Services.Uncryption
             Console.WriteLine("COUNT KEYS : " + xorBreaker.Keys.Count);
 
 
-            Parallel.ForEach(xorBreaker.Keys, (key) =>
+            //We first attack by index of coincidence
+            if (byIndex(message)) return null;
+
+
+            //If the first attack didn't work, well... go bruteforce...
+            Parallel.ForEach(xorBreaker.Keys, new  ParallelOptions{ CancellationToken = globalCancellationSource.Token }, (key) =>
             {
                 var request = new RequestHttp();
-
                 var plain = CryptoTools.Xor(decryptMessage.CipherText, key);
-
+                
+                //We filter all the key below a low Index (to take a maximum keys but not too much)
+                if (plain.Ic2() < 0.05)
+                    return;
+                
                 var decryptMsg = new DecryptMsg
                 {
                     FileName = decryptMessage.FileName,
@@ -54,14 +104,13 @@ namespace Middleware.Services.Uncryption
                 request.sendJson(msg);
 
             });
-
             return null;
-           
         }
-
+        
         public void StopOperation(Message message)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("CANCEL");
+            globalCancellationSource.Cancel();
         }
 
         public void StopService()
