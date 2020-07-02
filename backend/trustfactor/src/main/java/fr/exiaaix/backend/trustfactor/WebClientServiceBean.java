@@ -4,15 +4,15 @@ import com.google.gson.Gson;
 import fr.exiaaix.backend.trustfactor.models.DecryptData;
 import fr.exiaaix.backend.trustfactor.models.ServiceMessage;
 
-import javax.enterprise.context.RequestScoped;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.Stateless;
 
-@RequestScoped
+@Stateless
 public class WebClientServiceBean {
 
 

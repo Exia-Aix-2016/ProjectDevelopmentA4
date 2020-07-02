@@ -1,23 +1,18 @@
 package fr.exiaaix.backend.trustfactor;
 
-import javax.enterprise.context.ApplicationScoped;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import javax.ejb.Singleton;
+import java.util.concurrent.ConcurrentHashMap;
 
-@ApplicationScoped
+@Singleton
 public class CacheServiceBean {
 
-    private Map<String, String> filesCaches =  new HashMap<>();
+    private ConcurrentHashMap<String, String> filesCaches = new ConcurrentHashMap<>();
 
-
-    public void addFile(String filename, String text){
-
+    public void addFile(String filename, String text) {
         filesCaches.put(filename, text);
     }
 
-    public String getFile(String filename){
+    public String getFile(String filename) {
         return filesCaches.get(filename);
     }
 }
