@@ -29,8 +29,9 @@
                     Foreground="BlueViolet"
                     TextAlignment="Center"/>
 
-            <TextBlock Name="ResultBox" HorizontalAlignment="Center" Height="262" Margin="70,118,70,0" VerticalAlignment="Top" Width="660" Background="White"/>
-
+            <ScrollViewer HorizontalAlignment="Center" Margin="70,118,70,0" VerticalAlignment="Top" Width="660" Height="262" >
+                <TextBlock Name="ResultBox" Background="White" MinHeight="262"/>
+            </ScrollViewer>
             <Button Name="ButtonOuvrir" Content="Ouvrir" HorizontalAlignment="Left" Height="25" Margin="351,402,0,0" VerticalAlignment="Top" Width="84" Click="ButtonOuvrir_Click" IsEnabled="False"/>
 
 
