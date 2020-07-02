@@ -19,7 +19,7 @@
                     </LinearGradientBrush>
 
                 </Border.Background>
-
+                
             </Border>
 
 
@@ -29,28 +29,11 @@
                     Foreground="BlueViolet"
                     TextAlignment="Center"/>
 
+            <TextBlock Name="ResultBox" HorizontalAlignment="Center" Height="262" Margin="70,118,70,0" VerticalAlignment="Top" Width="660" Background="White"/>
 
-            <TextBlock TextWrapping="Wrap" Margin="0,130,111,195"
-                    FontFamily="Helvetica" 
-                    FontSize="20"
-                    Foreground="DarkSlateBlue"
-                    TextAlignment="Left" HorizontalAlignment="Right" Width="597"><Run Text="Document avec information secrète"/><Run Text="&#x9;"/></TextBlock>
-            
-            
-            
-            <TextBox Name="FileNameOn" HorizontalAlignment="Center" Height="75" Margin="110,170,549,0" VerticalAlignment="Top" Width="139"/>
-            <TextBox Name="KeyNameOn" HorizontalAlignment="Center" Height="75" Margin="326,170,335,0" VerticalAlignment="Top" Width="139"/>
-            <TextBox Name="SecretNameOn" HorizontalAlignment="Center" Height="75" Margin="537,170,124,0" VerticalAlignment="Top" Width="139"/>
+            <Button Name="ButtonOuvrir" Content="Ouvrir" HorizontalAlignment="Left" Height="25" Margin="351,402,0,0" VerticalAlignment="Top" Width="84" Click="ButtonOuvrir_Click" IsEnabled="False"/>
 
-            <TextBlock TextWrapping="Wrap" Text="Documents sans information secrète" Margin="95,270,111,111"
-                    FontFamily="Helvetica" 
-                    FontSize="20"
-                    Foreground="DarkSlateBlue"
-                    TextAlignment="Left"/>
 
-            <TextBox Name="FileNameOff" HorizontalAlignment="Center" Height="75" Margin="110,310,549,0" VerticalAlignment="Top" Width="139"/>
-            <TextBox Name="KeyNameOff" HorizontalAlignment="Center" Height="75" Margin="326,310,335,0" VerticalAlignment="Top" Width="139"/>
-            
         </Grid>
     </Grid>
 </Window>

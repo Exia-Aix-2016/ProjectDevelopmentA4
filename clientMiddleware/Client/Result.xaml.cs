@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
 using Middleware.Models;
 
 namespace Client
@@ -35,23 +36,21 @@ namespace Client
         {
             var decrypt = (DecryptMsg)message.Data;
 
+            var content = $"{decrypt.FileName} {decrypt.Key} {decrypt.Secret} \n";
+
+            ResultBox.Text += content;
+
             if (decrypt.Secret != null)
             {
-                FileNameOn.Text = decrypt.FileName;
-                KeyNameOn.Text = decrypt.Key;
-                SecretNameOn.Text = decrypt.Secret;
-
                 File.WriteAllBytes("monpdf.pdf", decrypt.Report.Select(x => (byte)x).ToArray());
-                string result = string.Join("", decrypt.Report);
-                Console.WriteLine(result);
+                ButtonOuvrir.IsEnabled  = true;
+            }
+                       
+        }
 
-                System.Diagnostics.Process.Start("monpdf.pdf");
-            }
-            else
-            {
-                FileNameOff.Text = decrypt.FileName;
-                KeyNameOff.Text = decrypt.Key;
-            }
+        private void ButtonOuvrir_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("monpdf.pdf");
         }
     }
 }
