@@ -20,10 +20,10 @@ import java.util.logging.Logger;
 @Stateless
 public class PdfServiceBean {
 
-    public byte[] createPdf(DecryptData decryptData, double percentageOfWords) throws IOException {
+    public byte[] createPdf(DecryptData decryptData, double percentageOfWords) throws IOException, DocumentException {
 
 
-/*
+
         //Text to write
         String information = "Information : \n " +
                 "File name : " + decryptData.FileName + "\n" +
@@ -44,12 +44,12 @@ public class PdfServiceBean {
             document.close();
             return os.toByteArray();
         }
-*/
 
 
 
 
-        try(PDDocument doc =  new PDDocument()){
+
+        /*try(PDDocument doc =  new PDDocument()){
             PDPage page = new PDPage();
 
             doc.addPage(page);
@@ -78,6 +78,6 @@ public class PdfServiceBean {
                 Logger.getLogger(PdfServiceBean.class.getName()).log(Level.INFO, "pdf created");
                 return byteArrayOutputStream.toByteArray();
             }
-        }
+        }*/
     }
 }

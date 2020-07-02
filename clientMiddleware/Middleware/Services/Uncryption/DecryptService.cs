@@ -11,10 +11,7 @@ using System.Threading.Tasks;
 
 namespace Middleware.Services.Uncryption
 {
-    class City
-    {
-        public string name;
-    }
+
     /// <summary>
     /// Decrypt Service
     /// </summary>
@@ -81,12 +78,10 @@ namespace Middleware.Services.Uncryption
         /// <returns></returns>
         public Message ServiceAction(Message message)
         {
-            List<City> cities = new List<City>();
-            Parallel.ForEach<City>(cities, (c) =>
-            {
-                Console.WriteLine(c.name):
-            });
+
             
+        
+           
             //Cache before decrypt
             cacheFile(message);
             
