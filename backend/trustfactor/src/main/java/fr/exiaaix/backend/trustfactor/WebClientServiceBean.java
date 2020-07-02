@@ -43,6 +43,7 @@ public class WebClientServiceBean {
 
         Logger.getLogger(WebClientServiceBean.class.getName()).log(Level.INFO, "Sended code Response : " + httpResult);
         con.disconnect();
+
     }
 
 }

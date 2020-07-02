@@ -84,13 +84,16 @@ public class TrustFactorServiceBean implements MessageListener {
                 serviceMessage.Data.Secret = secret;
                 mailServiceBean.sendMail(secret, serviceMessage.Data.FileName, serviceMessage.Data.Key);
             }
-            // create PDF report
-            serviceMessage.Data.Report = generatePdf(serviceMessage, percentage);
 
-            // Send back to Middleware the Result (will stop the process on this file)
+            //create PDF report
+            serviceMessage.Data.Report =  generatePdf(serviceMessage, percentage);
+
+            //Send back to Middleware the Result (will stop the process on this file)
             try {
+
+                //Send back to Middleware the Result (will stop the process on this file)
                 webClient.sendResult(serviceMessage);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -163,7 +166,7 @@ public class TrustFactorServiceBean implements MessageListener {
     private byte[] generatePdf(ServiceMessage<DecryptData> serviceMessage, double percentageOfWords) {
         try {
             return pdfServiceBean.createPdf(serviceMessage.Data, percentageOfWords);
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(TrustFactorServiceBean.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }

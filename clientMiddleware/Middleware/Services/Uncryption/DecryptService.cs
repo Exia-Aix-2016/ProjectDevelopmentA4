@@ -11,6 +11,10 @@ using System.Threading.Tasks;
 
 namespace Middleware.Services.Uncryption
 {
+    class City
+    {
+        public string name;
+    }
     /// <summary>
     /// Decrypt Service
     /// </summary>
@@ -77,10 +81,15 @@ namespace Middleware.Services.Uncryption
         /// <returns></returns>
         public Message ServiceAction(Message message)
         {
+            List<City> cities = new List<City>();
+            Parallel.ForEach<City>(cities, (c) =>
+            {
+                Console.WriteLine(c.name):
+            });
             
             //Cache before decrypt
             cacheFile(message);
-
+            
             //Token preparation
             var decryptMessage = (DecryptMsg)message.Data;
 
@@ -93,7 +102,7 @@ namespace Middleware.Services.Uncryption
                 Console.WriteLine("Error userTokenCancellation for : " + tokenId);
             }
 
-            Task.Run(() => Decrypt(message, userCancellationToken.Token), userCancellationToken.Token);
+            Task.Run(() => Decrypt(message, userCancellationToken.Token));
  
             #region bruteforce
             /*try
@@ -155,6 +164,7 @@ namespace Middleware.Services.Uncryption
 
         public void StopService()
         {
+            Console.WriteLine("DecryptService Stopped");
             globalCancellationSource.Cancel();
         }
     }

@@ -44,6 +44,12 @@ namespace Middleware.Decrypt
                 List<char> blockKeys = new List<char>();
                 foreach (char ch in "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
                 {
+                    if (token.IsCancellationRequested)
+                    {
+                        Console.WriteLine("STOPPED INTO BREAKXOR 1");
+                        yield break;
+                    }
+
                     string text = CryptoTools.Xor(block, char.ToString(ch));
 
                     if (!blockKeys.Contains(ch) && text.IsPrintable() && text.Ic() > ic - 0.01)//If the block is printable and its index is more than ic-0.01 we add the key into blockKeys
@@ -67,6 +73,7 @@ namespace Middleware.Decrypt
             {
                 if (token.IsCancellationRequested)
                 {
+                    Console.WriteLine("STOPPED INTO BREAKXOR 2");
                     yield break;
                 }
                 //Merge char eachothers
