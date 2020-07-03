@@ -15,18 +15,18 @@
             <Border CornerRadius="5" Grid.RowSpan="2">
                 <Border.Background>
                     <LinearGradientBrush>
-                        <GradientStop Color="AliceBlue" Offset="0.0"/>
-                        <GradientStop Color="CadetBlue" Offset="1"/>
+                        <GradientStop Color="ForestGreen" Offset="0.0"/>
+                        <GradientStop Color="MediumSeaGreen" Offset="1"/>
                     </LinearGradientBrush>
                 </Border.Background>
                 
             </Border>
         </Grid>
 
-        <TextBlock HorizontalAlignment="Left" Height="63" Margin="29,79,0,0" TextWrapping="Wrap" Text="Veuillez sélectionner les document à déchiffrer " VerticalAlignment="Top" Width="422"
-            FontFamily="Helvetica" FontSize="20"/>
+        <TextBlock HorizontalAlignment="Left" Height="63" Margin="403,198,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="336"
+            FontFamily="Helvetica" FontSize="20"><Run Text="Sélection des document"/><Run Text=" à déchiffrer"/></TextBlock>
 
-        <Button x:Name="btnOpenFile" Click="btnOpenFiles_Click" Content="Ouvrir" Background="LightBlue" Margin="601,23,142,407">
+        <Button x:Name="btnOpenFile" Click="btnOpenFiles_Click" Content="Ouvrir" Background="LightBlue" Margin="143,27,600,403">
             <Button.Resources>
                 <Style TargetType="Border">
                     <Setter Property="CornerRadius" Value="5"/>
@@ -39,9 +39,9 @@
             
         </WrapPanel>
         
-        <ListBox Name="fileUpload" Margin="488,60,40,66" Width="272" />
+        <ListBox Name="fileUpload" Margin="38,65,490,61" Width="272" />
 
-        <Button Content="Upload" Height="30" Margin="561,400,109,0" Click="btnUpload_Click" Background="LightBlue" VerticalAlignment="Top" Width="130">
+        <Button Content="Upload" Height="30" Margin="103,410,567,0" Click="btnUpload_Click" Background="LightBlue" VerticalAlignment="Top" Width="130">
             
             <Button.Resources>
                 <Style TargetType="Border">
